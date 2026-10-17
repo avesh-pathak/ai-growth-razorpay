@@ -1,6 +1,8 @@
 // lib/purchase-flow/story.ts
 // Pure timeline helpers shared by the three figures. No React here.
 
+import type { Evaluation, Scenario } from "./model";
+
 export interface Stage {
   id: string;
   /** Short label for the readout strip ("Picking", "Checking"). */
@@ -69,4 +71,72 @@ export interface ReadoutRow {
   label: string;
   value: string;
   tone?: "ok" | "bad" | "muted";
+}
+
+/* ------------------------------------------------------------- the story */
+
+/**
+ * The stage list for a scenario — the one timeline behind every figure.
+ * Durations are display-only: the production gate is a server module.
+ */
+export function stagesFor(scenario: Scenario, evaluation: Evaluation): Stage[] {
+  const blocked = evaluation.verdict === "blocked";
+  const head: Stage[] = [
+    { id: "request", label: "Request", event: "shopper.requested", dur: 2.0 },
+    { id: "propose", label: "Propose", event: "merchant.proposal_created", dur: 2.6 },
+    { id: "submit", label: "Submit", event: "merchant.proposal_submitted", dur: 1.4 },
+    { id: "screen", label: "Evaluate", event: "policy.evaluating", dur: 2.2 },
+  ];
+  if (blocked) {
+    return [...head, { id: "rejected", label: "Blocked", event: `policy.blocked · ${evaluation.reasonCode}`, dur: 3.0 }];
+  }
+  return [
+    ...head,
+    { id: "decision", label: "Decision", event: "policy.approved", dur: 1.6 },
+    { id: "catalog", label: "Catalog", event: "buyer.catalog_fetched", dur: 1.8 },
+    { id: "cart", label: "Cart", event: "buyer.cart_updated", dur: 1.8 },
+    { id: "quote", label: "Quote", event: `buyer.quote_created · ${scenario.quote}`, dur: 1.5 },
+    { id: "checkout", label: "Authorize", event: "policy.evaluating", dur: 2.2 },
+    {
+      id: "payment",
+      label: "Payment",
+      event: scenario.payment === "failed" ? "payment.failed" : "payment.succeeded",
+      dur: 2.0,
+    },
+    {
+      id: "result",
+      label: scenario.payment === "failed" ? "Failed" : "Receipt",
+      event: scenario.payment === "failed" ? `checkout.failed · ${scenario.txn}` : `receipt.issued · ${scenario.receipt}`,
+      dur: 2.2,
+    },
+  ];
+}
+
+/** Chrome label for the status chip ("Listening", "Approved", …). */
+export function stateLabel(story: Story, phase: number, scenario: Scenario, evaluation: Evaluation, ended: boolean): string {
+  if (ended) {
+    if (scenario.payment === "failed" && evaluation.verdict === "approved") return "Payment failed";
+    return evaluation.verdict === "blocked" ? "Blocked" : "Completed";
+  }
+  const id = story.stages[Math.min(phase, story.stages.length - 1)]?.id;
+  switch (id) {
+    case "request":
+      return "Listening";
+    case "propose":
+    case "submit":
+      return "Proposing";
+    case "screen":
+    case "checkout":
+      return "Evaluating";
+    case "rejected":
+      return "Blocked";
+    case "decision":
+      return "Approved";
+    case "payment":
+      return "Purchasing";
+    case "result":
+      return scenario.payment === "failed" ? "Failed" : "Completed";
+    default:
+      return "Purchasing";
+  }
 }

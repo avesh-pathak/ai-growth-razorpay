@@ -2,43 +2,10 @@
 // The unified story: one clock drives all three environments. Pure — the live
 // layer reads a ScenePose each frame and writes it to the DOM.
 
-import { clamp01, ease, makeStory, pastStage, stageProgress, within, type Stage, type Story } from "@/lib/purchase-flow/story";
+import { clamp01, ease, makeStory, pastStage, stageProgress, stagesFor, within, type Story } from "@/lib/purchase-flow/story";
 import type { Evaluation, Scenario } from "@/lib/purchase-flow/model";
 
 /* ------------------------------------------------------------- the story */
-
-export function stagesFor(scenario: Scenario, evaluation: Evaluation): Stage[] {
-  const blocked = evaluation.verdict === "blocked";
-  const head: Stage[] = [
-    { id: "request", label: "Request", event: "shopper.requested", dur: 2.0 },
-    { id: "propose", label: "Propose", event: "merchant.proposal_created", dur: 2.6 },
-    { id: "submit", label: "Submit", event: "merchant.proposal_submitted", dur: 1.4 },
-    { id: "screen", label: "Evaluate", event: "policy.evaluating", dur: 2.2 },
-  ];
-  if (blocked) {
-    return [...head, { id: "rejected", label: "Blocked", event: `policy.blocked · ${evaluation.reasonCode}`, dur: 3.0 }];
-  }
-  return [
-    ...head,
-    { id: "decision", label: "Decision", event: "policy.approved", dur: 1.6 },
-    { id: "catalog", label: "Catalog", event: "buyer.catalog_fetched", dur: 1.8 },
-    { id: "cart", label: "Cart", event: "buyer.cart_updated", dur: 1.8 },
-    { id: "quote", label: "Quote", event: `buyer.quote_created · ${scenario.quote}`, dur: 1.5 },
-    { id: "checkout", label: "Authorize", event: "policy.evaluating", dur: 2.2 },
-    {
-      id: "payment",
-      label: "Payment",
-      event: scenario.payment === "failed" ? "payment.failed" : "payment.succeeded",
-      dur: 2.0,
-    },
-    {
-      id: "result",
-      label: scenario.payment === "failed" ? "Failed" : "Receipt",
-      event: scenario.payment === "failed" ? `checkout.failed · ${scenario.txn}` : `receipt.issued · ${scenario.receipt}`,
-      dur: 2.2,
-    },
-  ];
-}
 
 export const storyFor = (scenario: Scenario, evaluation: Evaluation) => makeStory(stagesFor(scenario, evaluation));
 

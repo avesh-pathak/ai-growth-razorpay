@@ -9,7 +9,7 @@ import * as React from "react";
 import { RotateCcw, X } from "lucide-react";
 import { formatPaise } from "@/lib/data/products";
 import { evaluate, scenariosFor, type Evaluation, type Scenario } from "@/lib/purchase-flow/model";
-import type { Story } from "@/lib/purchase-flow/story";
+import { stateLabel, type Story } from "@/lib/purchase-flow/story";
 import { useStory } from "@/lib/purchase-flow/useStory";
 import { cn } from "@/lib/utils";
 import { CommerceArt, emptyRefs, type SceneRefs } from "./art";
@@ -227,36 +227,6 @@ function useScene(scenario: Scenario) {
 
   const handle = useStory(story, draw, hostRef);
   return { evaluation, story, refs, handle, hostRef };
-}
-
-/* ------------------------------------------------------------- chrome copy */
-
-function stateLabel(story: Story, phase: number, scenario: Scenario, evaluation: Evaluation, ended: boolean): string {
-  if (ended) {
-    if (scenario.payment === "failed" && evaluation.verdict === "approved") return "Payment failed";
-    return evaluation.verdict === "blocked" ? "Blocked" : "Completed";
-  }
-  const id = story.stages[Math.min(phase, story.stages.length - 1)]?.id;
-  switch (id) {
-    case "request":
-      return "Listening";
-    case "propose":
-    case "submit":
-      return "Proposing";
-    case "screen":
-    case "checkout":
-      return "Evaluating";
-    case "rejected":
-      return "Blocked";
-    case "decision":
-      return "Approved";
-    case "payment":
-      return "Purchasing";
-    case "result":
-      return scenario.payment === "failed" ? "Failed" : "Completed";
-    default:
-      return "Purchasing";
-  }
 }
 
 /* --------------------------------------------------------------- inspector */

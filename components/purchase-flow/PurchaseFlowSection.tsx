@@ -1,10 +1,11 @@
 "use client";
 
 // components/purchase-flow/PurchaseFlowSection.tsx
-// "How a purchase flows" — the three together on one surface: the Merchant
-// Agent sells, the Policy Gate authorizes, the Buyer Agent buys.
+// "How a purchase flows" — a live transaction replay: the Merchant Agent
+// sells, the Policy Gate authorizes, the Buyer Agent buys. The hero keeps the
+// isometric figure; this section is a software demonstration of the flow.
 
-import { CommerceScene } from "./scene/live";
+import { ReplayPanel } from "./replay/ReplayPanel";
 
 export function PurchaseFlowSection() {
   return (
@@ -20,7 +21,7 @@ export function PurchaseFlowSection() {
         </div>
 
         <div className="mt-12">
-          <CommerceScene />
+          <ReplayPanel />
         </div>
 
         <p className="mt-8 max-w-[46rem] text-[13px] leading-[1.6] text-muted-foreground">
