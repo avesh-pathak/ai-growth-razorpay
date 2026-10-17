@@ -15,10 +15,10 @@ export function Footer() {
       <div className="max-w-frame relative mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32">
         <div className="flex flex-col items-start gap-6 py-20 lg:py-[8.25rem]">
           <h2 className="max-w-[40rem] text-[clamp(2.25rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground">
-            Agentic commerce, explainable by design
+            Let AI make the sale. You set the limits.
           </h2>
           <p className="max-w-[40rem] text-[1.125rem] leading-[1.6] text-muted-foreground">
-            A store where a Merchant Agent sells and a Buyer Agent buys — every money action gated, bounded, mandated, and receipted. Runs entirely on test-mode rails.
+            See a selling agent build an offer and a buying agent check out—within your spending limits and pricing rules. Test-mode demo; no real money moves.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Link
@@ -45,7 +45,7 @@ export function Footer() {
 
         <div className="grid grid-cols-2 gap-8 border-t border-border py-12 md:grid-cols-4">
           {cols.map((c) => (
-            <div key={c.title} className="flex flex-col gap-3">
+            <div key={c.title} className="flex min-w-0 flex-col gap-3">
               <h3 className="text-[0.875rem] font-medium text-foreground">{c.title}</h3>
               <ul className="flex flex-col gap-2">
                 {c.links.map((l) => (
@@ -53,7 +53,7 @@ export function Footer() {
                     {l.href === "#" ? (
                       <span className="text-sm text-muted-foreground/60">{l.label}</span>
                     ) : (
-                      <Link href={l.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      <Link href={l.href} className="break-words text-sm text-muted-foreground transition-colors hover:text-foreground">
                         {l.label}
                       </Link>
                     )}
@@ -64,12 +64,12 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="flex flex-col items-start justify-between gap-4 border-t border-border py-6 sm:flex-row sm:items-center">
+        <div className="flex flex-col items-start justify-between gap-4 border-t border-border pt-6 pb-[calc(1.5rem_+_env(safe-area-inset-bottom))] sm:flex-row sm:items-center">
           <div className="flex items-center gap-2">
             <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand text-brand-foreground text-[9px] font-medium">
               S
             </span>
-            <span className="text-sm text-muted-foreground">Agentic commerce, explainable by design.</span>
+            <span className="text-sm text-muted-foreground">AI makes the sale. You set the limits.</span>
           </div>
           <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
             <span>© 2026 SlashCheckout</span>

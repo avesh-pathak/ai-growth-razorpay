@@ -41,16 +41,12 @@ interface ReplayRefs {
   sysRow: HTMLDivElement | null;
   cards: (HTMLDivElement | null)[];
   bundleCard: HTMLDivElement | null;
-  bundleRows: (HTMLDivElement | null)[];
   bundleTotal: HTMLSpanElement | null;
   offerChip: HTMLSpanElement | null;
-  blockedRow: HTMLDivElement | null;
   gateChip: HTMLSpanElement | null;
-  gateStage: HTMLSpanElement | null;
   ruleRows: (HTMLLIElement | null)[];
   ruleWords: (HTMLSpanElement | null)[];
   reasonBox: HTMLDivElement | null;
-  gatewayBanner: HTMLDivElement | null;
   catRows: (HTMLDivElement | null)[];
   catCount: HTMLSpanElement | null;
   cartRows: (HTMLDivElement | null)[];
@@ -81,16 +77,12 @@ const emptyRefs = (): ReplayRefs => ({
   sysRow: null,
   cards: [],
   bundleCard: null,
-  bundleRows: [],
   bundleTotal: null,
   offerChip: null,
-  blockedRow: null,
   gateChip: null,
-  gateStage: null,
   ruleRows: [],
   ruleWords: [],
   reasonBox: null,
-  gatewayBanner: null,
   catRows: [],
   catCount: null,
   cartRows: [],
@@ -116,14 +108,6 @@ const setOpacity = (el: HTMLElement | null, value: number) => {
   if (el) el.style.opacity = value.toFixed(3);
 };
 
-function engagementText(frame: ReplayFrame): string {
-  if (frame.gateEngagement === "proposal") return "engagement 1 · proposal review";
-  if (frame.gateEngagement === "checkout") return "engagement 2 · checkout authorisation";
-  if (frame.gateVerdict === "blocked") return "engagement 1 · blocked, nothing later evaluated";
-  if (frame.gateVerdict === "approved") return frame.authorized ? "both engagements cleared" : "engagement 1 · cleared";
-  return "standing by";
-}
-
 function eventTone(event: string, live: boolean): string {
   if (live) return "live";
   if (/blocked|failed|declined/.test(event)) return "destructive";
@@ -134,7 +118,7 @@ function eventTone(event: string, live: boolean): string {
 function paint(refs: ReplayRefs, frame: ReplayFrame) {
   /* panes */
   setOpacity(refs.merchantPane, frame.merchantVis);
-  setOpacity(refs.buyerPane, frame.buyerVis * (1 - frame.receiptVis * 0.35));
+  setOpacity(refs.buyerPane, frame.buyerVis);
 
   /* merchant */
   if (refs.msgText) refs.msgText.textContent = frame.msgText;
@@ -156,20 +140,17 @@ function paint(refs: ReplayRefs, frame: ReplayFrame) {
     refs.bundleCard.style.opacity = frame.bundleVis.toFixed(3);
     refs.bundleCard.style.transform = `translateY(${((1 - frame.bundleVis) * 10).toFixed(2)}px)`;
   }
-  frame.bundleRows.forEach((t, k) => setOpacity(refs.bundleRows[k], t));
   if (refs.bundleTotal) refs.bundleTotal.textContent = formatPaise(frame.bundleTotalPaise);
   if (refs.offerChip) {
     refs.offerChip.dataset.state = frame.offer;
     refs.offerChip.textContent = OFFER_WORD[frame.offer];
   }
-  setOpacity(refs.blockedRow, frame.blockedNote);
 
   /* gate */
   if (refs.gateChip) {
     refs.gateChip.dataset.state = frame.gateVerdict;
     refs.gateChip.textContent = GATE_WORD[frame.gateVerdict];
   }
-  if (refs.gateStage) refs.gateStage.textContent = engagementText(frame);
   frame.checks.forEach((state, r) => {
     const row = refs.ruleRows[r];
     if (row) row.dataset.state = state;
@@ -177,10 +158,6 @@ function paint(refs: ReplayRefs, frame: ReplayFrame) {
     if (word) word.textContent = CHECK_WORD[state];
   });
   setOpacity(refs.reasonBox, frame.reasonVis);
-  if (refs.gatewayBanner) {
-    refs.gatewayBanner.dataset.state = frame.gateVerdict;
-    setOpacity(refs.gatewayBanner, frame.bannerVis);
-  }
 
   /* buyer */
   frame.catRows.forEach((t, k) => {
@@ -318,13 +295,13 @@ export function ReplayPanel() {
   const live = handle.playing && !handle.reduced;
 
   return (
-    <div ref={handle.anchor} role="region" aria-label="Live purchase simulation">
+    <div ref={handle.anchor} className="rp-runtime" role="region" aria-label="Live purchase simulation">
       {/* top strip */}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap items-center gap-2.5">
           <span className="rp-led" data-on={live ? "true" : "false"} />
           <span className="rp-mono text-[10.5px] tracking-[0.16em] text-muted-foreground uppercase">
-            Live purchase simulation
+            Purchase simulation
           </span>
           <span className="rp-chip" data-state={tone === "positive" ? "approved" : tone === "destructive" ? "blocked" : "review"}>
             {status}
@@ -332,18 +309,12 @@ export function ReplayPanel() {
         </div>
         <ScenarioPicker scenarios={scenarios} value={scenario.id} onChange={setScenarioId} label="Scenario" />
       </div>
-      <p className="mt-3 max-w-[46rem] text-[13px] leading-[1.6] text-muted-foreground">{scenario.blurb}</p>
 
       {/* the runtime window */}
-      <div className="mt-5 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+      <div className="rp-window mt-5 overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         {/* window bar */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border px-4 py-2.5">
-          <div className="flex items-center gap-1.5" aria-hidden="true">
-            <span className="size-2.5 rounded-full bg-muted" />
-            <span className="size-2.5 rounded-full bg-muted" />
-            <span className="size-2.5 rounded-full bg-muted" />
-          </div>
-          <span className="rp-mono text-[11px] text-muted-foreground">slashcheckout · purchase runtime</span>
+        <div className="rp-window-bar flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-border px-4 py-2.5">
+          <span className="text-[12px] text-muted-foreground">Test mode · no real money</span>
           <div
             role="group"
             aria-label="Active workspace"
@@ -358,6 +329,7 @@ export function ReplayPanel() {
             ).map(([key, label, Icon]) => (
               <span
                 key={key}
+                data-workspace={key}
                 aria-current={tab === key ? "true" : undefined}
                 className={cn(
                   "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11.5px] font-semibold transition-colors sm:text-[12px]",
@@ -378,19 +350,19 @@ export function ReplayPanel() {
         </div>
 
         {/* body */}
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(240px,290px)_minmax(190px,230px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_290px]">
           {/* main stage */}
-          <div className="relative min-h-[640px] sm:min-h-[500px] lg:min-h-[480px]">
+          <div className="relative grid min-h-[480px]">
             {/* merchant pane */}
             <div
               ref={(el) => {
                 refs.merchantPane = el;
               }}
-              className="rp-pane absolute inset-0 grid content-start gap-4 overflow-hidden p-4 sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] sm:p-5"
+              className="rp-pane rp-merchant col-start-1 row-start-1 grid content-start gap-4 overflow-hidden p-4 sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] sm:p-5"
             >
-              <div className="flex min-h-0 flex-col gap-2.5">
-                <PanelHead title="Merchant agent · conversation" />
-                <div className="flex min-h-0 flex-1 flex-col justify-end rounded-xl border border-border bg-muted/30 p-3">
+              <div className="flex flex-col gap-2.5">
+                <PanelHead title="The request" />
+                <div className="rp-conversation flex flex-1 flex-col justify-end rounded-xl border border-border bg-muted/30 p-3">
                   <div className="max-w-[94%] rounded-xl rounded-bl-sm border border-border bg-card px-3 py-2">
                     <div className="rp-mono text-[10.5px] font-medium tracking-[0.1em] text-muted-foreground uppercase">Shopper</div>
                     <p className="mt-1 text-[12.5px] leading-[1.5] text-foreground">
@@ -436,19 +408,9 @@ export function ReplayPanel() {
                   >
                     <ShieldCheck className="size-3.5 shrink-0 text-muted-foreground" />
                     <span className="text-[12px] leading-[1.4] text-muted-foreground">
-                      Proposal submitted — the Policy Gate reviews it before anything is buyable.
+                      Sent for policy review
                     </span>
                   </div>
-                  {evaluation.verdict === "blocked" && (
-                    <div
-                      ref={(el) => {
-                        refs.blockedRow = el;
-                      }}
-                      className="mt-2.5 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2"
-                    >
-                      <span className="rp-mono text-[11px] text-destructive">policy.blocked · {evaluation.reasonCode}</span>
-                    </div>
-                  )}
                 </div>
                 <div
                   ref={(el) => {
@@ -457,7 +419,7 @@ export function ReplayPanel() {
                   className="rounded-xl border border-border bg-card p-3"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[12.5px] font-medium text-foreground">Bundle proposal</span>
+                    <span className="text-[12.5px] font-medium text-foreground">{lines.length}-item proposal</span>
                     <span
                       ref={(el) => {
                         refs.offerChip = el;
@@ -467,25 +429,8 @@ export function ReplayPanel() {
                       draft
                     </span>
                   </div>
-                  <div className="mt-2 flex flex-col gap-1">
-                    {lines.slice(0, 3).map((line, k) => (
-                      <div
-                        key={line.sku}
-                        ref={(el) => {
-                          refs.bundleRows[k] = el;
-                        }}
-                        className="flex items-baseline justify-between gap-2 text-[12px]"
-                      >
-                        <span className="truncate text-muted-foreground">{line.short}</span>
-                        <span className="rp-mono shrink-0 text-foreground">{formatPaise(line.unitPaise * line.qty)}</span>
-                      </div>
-                    ))}
-                    {lines.length > 3 && (
-                      <div className="text-[11px] text-muted-foreground">+ {lines.length - 3} more lines</div>
-                    )}
-                  </div>
                   <div className="mt-2 flex items-baseline justify-between border-t border-border pt-2">
-                    <span className="text-[12px] text-muted-foreground">Total · vendor list</span>
+                    <span className="text-[12px] text-muted-foreground">Proposed total</span>
                     <span
                       ref={(el) => {
                         refs.bundleTotal = el;
@@ -497,8 +442,8 @@ export function ReplayPanel() {
                   </div>
                 </div>
               </div>
-              <div className="flex min-h-0 flex-col gap-2.5">
-                <PanelHead title="Storefront · live catalog" hint={`${lines.length} SKUs`} />
+              <div className="flex flex-col gap-2.5">
+                <PanelHead title="The bundle" hint={`${lines.length} items`} />
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {lines.map((line, k) => (
                     <div
@@ -506,7 +451,8 @@ export function ReplayPanel() {
                       ref={(el) => {
                         refs.cards[k] = el;
                       }}
-                      className="rounded-lg border border-border bg-card p-2.5"
+                      className="rp-product rounded-lg border border-border bg-card p-2.5"
+                      data-category={line.category.toLowerCase()}
                     >
                       <div className="truncate text-[12px] font-medium text-foreground">{line.short}</div>
                       <div className="mt-0.5 truncate text-[10.5px] text-muted-foreground capitalize">{line.category}</div>
@@ -514,9 +460,6 @@ export function ReplayPanel() {
                     </div>
                   ))}
                 </div>
-                <p className="rp-mono mt-auto text-[10px] leading-[1.5] text-muted-foreground">
-                  vendor list · prices re-fetched at evaluation
-                </p>
               </div>
             </div>
 
@@ -525,11 +468,11 @@ export function ReplayPanel() {
               ref={(el) => {
                 refs.buyerPane = el;
               }}
-              className="rp-pane absolute inset-0 grid content-start gap-4 overflow-hidden p-4 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] sm:p-5"
+              className="rp-pane rp-buyer col-start-1 row-start-1 grid content-start gap-4 overflow-hidden p-4 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] sm:p-5"
             >
-              <div className="flex min-h-0 flex-col gap-2.5">
+              <div className="flex flex-col gap-2.5">
                 <PanelHead
-                  title="Buyer agent · catalog"
+                  title="Buyer selection"
                   hint={
                     <span
                       ref={(el) => {
@@ -610,7 +553,7 @@ export function ReplayPanel() {
                   </div>
                 </div>
               </div>
-              <div className="flex min-h-0 flex-col gap-2.5">
+              <div className="flex flex-col gap-2.5">
                 <PanelHead title="Order summary" />
                 <div
                   ref={(el) => {
@@ -619,7 +562,7 @@ export function ReplayPanel() {
                   className="rounded-xl border border-border bg-card p-3"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[12.5px] font-medium text-foreground">Quote {scenario.quote}</span>
+                      <span className="text-[12.5px] font-medium text-foreground">Locked quote</span>
                     <span
                       ref={(el) => {
                         refs.quoteStamp = el;
@@ -641,9 +584,6 @@ export function ReplayPanel() {
                       ₹0.00
                     </span>
                   </div>
-                  <p className="mt-1 text-[11px] leading-[1.4] text-muted-foreground">
-                    Backend re-fetch — the authoritative price, not the cart&rsquo;s.
-                  </p>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {[scenario.merchant, scenario.buyer].map((mandate, k) => (
@@ -657,7 +597,7 @@ export function ReplayPanel() {
                       <span className="rp-mono text-[9.5px] tracking-[0.1em] text-positive uppercase">
                         {mandate.party} mandate
                       </span>
-                      <span className="rp-mono text-[10.5px] text-foreground">{mandate.id} · verified</span>
+                      <span className="text-[12px] text-foreground">Verified</span>
                     </div>
                   ))}
                 </div>
@@ -673,9 +613,6 @@ export function ReplayPanel() {
                       pending
                     </span>
                   </div>
-                  <p className="mt-1 text-[11px] leading-[1.4] text-muted-foreground">
-                    The Buyer Agent places the order — zero human clicks.
-                  </p>
                   <div
                     ref={(el) => {
                       refs.payCard = el;
@@ -703,9 +640,6 @@ export function ReplayPanel() {
                         className="rp-fill"
                       />
                     </div>
-                    <p className="mt-1.5 text-[10.5px] leading-[1.4] text-muted-foreground">
-                      Razorpay test processor · simulated — no real money moves in this demo.
-                    </p>
                     {scenario.payment === "failed" && (
                       <div
                         ref={(el) => {
@@ -713,7 +647,7 @@ export function ReplayPanel() {
                         }}
                         className="mt-1.5 text-[10.5px] leading-[1.4] text-destructive"
                       >
-                        The test-mode charge was declined — no receipt is issued.
+                        Declined. No receipt issued.
                       </div>
                     )}
                   </div>
@@ -739,15 +673,10 @@ export function ReplayPanel() {
                     </div>
                     <dl className="mt-3 flex flex-col gap-1 text-[12px]">
                       <ReceiptRow label="Receipt" value={scenario.receipt} />
-                      <ReceiptRow label="Quote" value={scenario.quote} />
-                      <ReceiptRow label="Transaction" value={scenario.txn} />
-                      <ReceiptRow label="Items" value={`${lines.length} SKUs`} />
+                      <ReceiptRow label="Items" value={`${lines.length}`} />
                       <ReceiptRow label="Total" value={formatPaise(evaluation.totalPaise)} />
                       <ReceiptRow label="Payment" value="paid · test mode" />
                     </dl>
-                    <p className="mt-3 border-t border-border pt-2 text-[10.5px] leading-[1.4] text-muted-foreground">
-                      Simulated settlement · demo data — no real payment occurred.
-                    </p>
                   </div>
                 </div>
               </div>
@@ -755,7 +684,7 @@ export function ReplayPanel() {
           </div>
 
           {/* gate rail */}
-          <aside className="flex flex-col gap-3 border-t border-border p-4 sm:p-5 lg:border-t-0 lg:border-l">
+          <aside className="rp-gate flex flex-col gap-3 border-t border-border p-4 sm:p-5 lg:border-t-0 lg:border-l">
             <div className="flex items-center justify-between gap-2">
               <PanelHead title="Policy gate" />
               <span
@@ -767,14 +696,6 @@ export function ReplayPanel() {
                 standing by
               </span>
             </div>
-            <p
-              ref={(el) => {
-                refs.gateStage = el;
-              }}
-              className="rp-mono text-[10.5px] text-muted-foreground"
-            >
-              standing by
-            </p>
             <ol className="flex flex-col gap-1">
               {RULES.map((rule, r) => (
                 <li
@@ -796,7 +717,7 @@ export function ReplayPanel() {
                     ref={(el) => {
                       refs.ruleWords[r] = el;
                     }}
-                    className="rp-rule-word"
+                    className="rp-rule-word sr-only"
                   >
                     ———
                   </span>
@@ -810,66 +731,25 @@ export function ReplayPanel() {
                 }}
                 className="rounded-lg border border-destructive/30 bg-destructive/5 p-2.5"
               >
-                <div className="rp-mono text-[10px] tracking-[0.12em] text-destructive uppercase">determining rule</div>
-                <div className="mt-1 text-[12.5px] font-medium text-foreground">{failedRule?.label}</div>
-                <p className="mt-1 text-[11.5px] leading-[1.5] text-muted-foreground">{evaluation.reasonText}</p>
-                <span className="rp-chip mt-2" data-state="blocked">
-                  {evaluation.reasonCode}
-                </span>
+                <div className="text-[13px] font-medium text-destructive">{failedRule?.label} exceeded</div>
+                {failedRule?.id === "per_order_cap" ? (
+                  <dl className="mt-3 space-y-2 text-[12px]">
+                    <ReceiptRow label="Proposed" value={formatPaise(evaluation.totalPaise)} />
+                    <ReceiptRow label="Allowed" value={formatPaise(Math.min(scenario.buyer.perOrderPaise, scenario.merchant.perOrderPaise))} />
+                  </dl>
+                ) : (
+                  <p className="mt-2 text-[12px] leading-relaxed text-muted-foreground">{evaluation.reasonText}</p>
+                )}
+                <p className="mt-3 text-[12px] text-muted-foreground">Checkout stopped. No charge.</p>
               </div>
             )}
-            <div
-              ref={(el) => {
-                refs.gatewayBanner = el;
-              }}
-              className={cn(
-                "mt-auto rounded-lg border px-3 py-2",
-                evaluation.verdict === "blocked" ? "border-destructive/30 bg-destructive/5" : "border-positive/30 bg-positive/5",
-              )}
-            >
-              {evaluation.verdict === "blocked" ? (
-                <div className="flex items-center gap-2 text-[12px] font-medium text-destructive">
-                  <X className="size-3.5 shrink-0" />
-                  Blocked — first failure wins
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 text-[12px] font-medium text-positive">
-                  <ShieldCheck className="size-3.5 shrink-0" />
-                  Authorized — all seven rules passed
-                </div>
-              )}
-            </div>
-            <p className="rp-mono text-[10px] leading-[1.5] text-muted-foreground">
-              seven rules · precedence order · first failure wins
-            </p>
-          </aside>
-
-          {/* audit rail */}
-          <aside className="flex min-h-0 flex-col border-t border-border p-4 sm:p-5 lg:border-t-0 lg:border-l">
-            <div className="flex items-center justify-between gap-2">
-              <PanelHead title="Audit log" />
-              <span className="rp-led" data-on={live ? "true" : "false"} />
-            </div>
-            <ol className="rp-feed mt-3 flex min-h-0 flex-1 flex-col justify-end gap-1 overflow-hidden">
-              {events.map((event, i) => (
-                <li
-                  key={`${i}-${event.id}`}
-                  className="rp-ev"
-                  data-tone={eventTone(event.event, !handle.ended && i === events.length - 1)}
-                >
-                  <span className="rp-ev-i">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="truncate">{event.event}</span>
-                </li>
-              ))}
-            </ol>
-            <p className="rp-mono mt-3 text-[10px] text-muted-foreground">append-only · demo ledger</p>
           </aside>
         </div>
 
         {/* status bar */}
-        <div className="flex items-center gap-3 border-t border-border px-4 py-2.5">
+        <div className="rp-status-bar flex items-center gap-3 border-t border-border px-4 py-2.5">
           <span className="rp-led" data-on={live ? "true" : "false"} />
-          <p className="min-w-0 flex-1 truncate text-[12.5px] text-muted-foreground" aria-live="polite">
+          <p className="min-w-0 flex-1 text-[12.5px] text-muted-foreground" aria-live="polite">
             {context}
           </p>
           <span
@@ -879,6 +759,38 @@ export function ReplayPanel() {
             className="rp-mono hidden shrink-0 text-[10.5px] text-muted-foreground sm:block"
           />
         </div>
+        <details key={scenario.id} className="rp-details border-t border-border">
+          <summary className="cursor-pointer px-4 py-3 text-[12px] text-muted-foreground">
+            Technical details <span className="ml-2">· {events.length} audit events</span>
+          </summary>
+          <div className="grid gap-6 px-4 pb-5 sm:grid-cols-2">
+            <div className="space-y-3 text-[12px] leading-relaxed text-muted-foreground">
+              <p>{scenario.blurb}</p>
+              <p>Prices are re-fetched before a five-minute quote is issued. Both mandates are checked again at checkout. Rules run in order; the first failure stops evaluation.</p>
+              {evaluation.verdict === "blocked" && <p>{evaluation.reasonText} · <code>{evaluation.reasonCode}</code></p>}
+              <dl className="space-y-1">
+                <ReceiptRow label="Merchant mandate" value={scenario.merchant.id} />
+                <ReceiptRow label="Buyer mandate" value={scenario.buyer.id} />
+              </dl>
+              <p>Demo data and simulated Razorpay payments. No real money moves.</p>
+            </div>
+            <div className="min-w-0">
+              <PanelHead title="Audit log · append-only demo ledger" />
+              <ol className="mt-3 space-y-1">
+                {events.map((event, i) => (
+                  <li key={`${i}-${event.id}`} className="rp-ev" data-tone={eventTone(event.event, !handle.ended && i === events.length - 1)}>
+                    <span className="rp-ev-i">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="min-w-0 break-all">{event.event}</span>
+                  </li>
+                ))}
+              </ol>
+              <dl className="mt-4 space-y-1 text-[12px]">
+                <ReceiptRow label="Quote reference" value={scenario.quote} />
+                <ReceiptRow label="Transaction reference" value={scenario.txn} />
+              </dl>
+            </div>
+          </div>
+        </details>
       </div>
     </div>
   );

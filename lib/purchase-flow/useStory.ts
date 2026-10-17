@@ -35,11 +35,14 @@ export interface StoryHandle {
  *
  * Pass `anchorRef` when the caller needs the stage element for anything else
  * (the figures also set `data-*` attributes on it while drawing).
+ * Set `autoplayDelayMs` to zero for an immediate, in-view start. Other figures
+ * retain the default reading pause.
  */
 export function useStory(
   story: Story,
   draw: (clock: number, phase: number) => void,
   anchorRef?: React.RefObject<HTMLDivElement | null>,
+  autoplayDelayMs = AUTOPLAY_DELAY,
 ): StoryHandle {
   const ownRef = React.useRef<HTMLDivElement | null>(null);
   const anchor = anchorRef ?? ownRef;
@@ -192,17 +195,22 @@ export function useStory(
         return;
       }
       if (autoRunRef.current && !reduced) {
-        const timer = window.setTimeout(() => {
+        const start = () => {
           autoRunRef.current = false;
           play();
-        }, AUTOPLAY_DELAY);
+        };
+        if (autoplayDelayMs === 0) {
+          start();
+          return;
+        }
+        const timer = window.setTimeout(start, autoplayDelayMs);
         return () => window.clearTimeout(timer);
       }
       return;
     }
     resumeRef.current = playingRef.current;
     stop();
-  }, [visible, reduced, play, run, stop]);
+  }, [visible, reduced, play, run, stop, autoplayDelayMs]);
 
   React.useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
 

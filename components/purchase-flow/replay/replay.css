@@ -5,6 +5,93 @@
 
 /* ------------------------------------------------------------------- bits */
 
+/* Neutral work surfaces keep the transaction legible. Orange identifies the
+   active workspace; green and red exclusively communicate outcomes.
+   Scoped inks keep small labels legible without changing the site palette. */
+.rp-runtime {
+  --brand: #b93812;
+  --positive: #16703e;
+  --destructive: #b42332;
+  --muted-foreground: #52525b;
+  --border: #dedee3;
+  --rp-surface: #f7f7f8;
+  --rp-rail: #fafafa;
+}
+
+.dark .rp-runtime {
+  --brand: #ff9a73;
+  --positive: #79d99a;
+  --destructive: #ff939d;
+  --muted-foreground: #b0b0ba;
+  --border: #36363d;
+  --rp-surface: #19191d;
+  --rp-rail: #131316;
+}
+
+.rp-window {
+  border-color: var(--border);
+}
+
+.rp-window-bar,
+.rp-status-bar {
+  background: var(--rp-surface);
+}
+
+.rp-merchant {
+  background: var(--card);
+}
+
+.rp-conversation {
+  background: var(--rp-surface);
+  border-color: var(--border);
+}
+
+.rp-buyer {
+  background: var(--card);
+}
+
+.rp-gate {
+  background: var(--rp-rail);
+  border-color: var(--border);
+}
+
+.rp-details summary {
+  min-height: 44px;
+}
+
+.rp-details summary:hover {
+  background: var(--rp-surface);
+  color: var(--foreground);
+}
+
+.rp-details summary:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: -3px;
+}
+
+.rp-runtime [data-workspace][aria-current="true"] {
+  color: var(--brand);
+  background: var(--card);
+  --tw-ring-color: color-mix(in oklab, var(--brand) 40%, var(--card));
+}
+
+.rp-runtime [data-workspace] svg { color: var(--muted-foreground); }
+.rp-runtime [data-workspace][aria-current="true"] svg { color: var(--brand); }
+
+.rp-product {
+  background: var(--rp-rail);
+  border-color: var(--border);
+}
+
+.rp-rule[data-state="passed"] {
+  background: transparent;
+}
+
+.rp-runtime ::selection {
+  color: var(--foreground);
+  background: color-mix(in oklab, var(--brand) 18%, var(--card));
+}
+
 .rp-led {
   width: 7px;
   height: 7px;
@@ -136,7 +223,7 @@
 }
 
 .rp-rule[data-state="skipped"] {
-  opacity: 0.45;
+  color: var(--muted-foreground);
 }
 
 .rp-rule-ico {
@@ -194,7 +281,7 @@
   width: 9px;
   height: 1.5px;
   border-radius: 2px;
-  background: var(--border);
+  background: var(--muted-foreground);
 }
 
 .rp-rule[data-state="passed"] .rp-ico-check,
@@ -240,11 +327,6 @@
 
 /* -------------------------------------------------------------- audit feed */
 
-.rp-feed {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22px);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 22px);
-}
-
 .rp-ev {
   display: flex;
   align-items: baseline;
@@ -281,7 +363,7 @@
 
 .rp-ev-i {
   font-size: 10px;
-  opacity: 0.55;
+  color: var(--muted-foreground);
 }
 
 /* -------------------------------------------------------------- catalog row */
@@ -307,10 +389,6 @@
 .rp-row[data-picked="true"] .rp-pick {
   opacity: 1;
   transform: none;
-}
-
-.rp-row[data-picked="true"] .rp-row-main {
-  opacity: 0.5;
 }
 
 /* ---------------------------------------------------------------- progress */

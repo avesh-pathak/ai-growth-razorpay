@@ -13,8 +13,8 @@ export type GateVerdict = "standing" | "evaluating" | "approved" | "blocked";
 export type StageKind = "merchant" | "gate" | "buyer";
 
 /* The chat copy is fixed demo copy — the amounts and rule text are not. */
-export const MESSAGE = "Can you put together a midweek pour-over setup — the essentials?";
-export const REPLY = "On it — I pulled six items from the live catalog. Bundle proposal below, priced at vendor list.";
+export const MESSAGE = "A pour-over setup for the week — just the essentials.";
+export const REPLY = "Six essentials. Here’s your bundle.";
 
 export const CHECK_WORD: Record<CheckDisplay, string> = {
   pending: "———",
@@ -239,31 +239,31 @@ export function contextLine(scenario: Scenario, evaluation: Evaluation, story: S
   const failed = evaluation.rules[evaluation.failedIndex];
   switch (stage.id) {
     case "request":
-      return "A shopper asks for help — the Merchant Agent listens.";
+      return "Listening to the shopper.";
     case "propose":
-      return `The Merchant Agent drafts a bundle of ${evaluation.lines.length} SKUs, priced at vendor list.`;
+      return `Building a ${evaluation.lines.length}-item bundle.`;
     case "submit":
-      return "The proposal goes to the Policy Gate — nothing is buyable until it passes.";
+      return "Proposal sent for review.";
     case "screen":
-      return "Seven rules evaluate in precedence order. First failure wins.";
+      return "Checking the proposal.";
     case "rejected":
-      return `Blocked at ${failed?.short ?? "policy"} — ${evaluation.reasonCode}. Nothing later is evaluated.`;
+      return `Stopped at ${failed?.short.toLowerCase() ?? "policy review"}. No charge.`;
     case "decision":
-      return "All seven rules passed. The offer is now buyable at list price.";
+      return "Proposal approved.";
     case "catalog":
-      return "The Buyer Agent fetches the authoritative catalog — six SKUs.";
+      return "Fetching the catalog.";
     case "cart":
-      return "Selected SKUs move into the cart. The total is provisional until quoted.";
+      return "Adding the selected items.";
     case "quote":
-      return `The backend issues quote ${scenario.quote} — the price is locked for five minutes.`;
+      return "Price locked for five minutes.";
     case "checkout":
-      return "Both mandates and the policy rules re-verify against the quote.";
+      return "Rechecking permissions before payment.";
     case "payment":
-      return "The test-mode processor charges the quoted amount.";
+      return "Processing a simulated payment.";
     case "result":
       return scenario.payment === "failed" && evaluation.verdict === "approved"
-        ? "Declined in test mode. No receipt, no order token — the audit records the failure."
-        : `Payment succeeded. Receipt ${scenario.receipt} is issued and the audit trail closes the loop.`;
+        ? "Payment declined. No receipt issued."
+        : `Payment complete. Receipt ${scenario.receipt} issued.`;
     default:
       return "";
   }
