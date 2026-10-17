@@ -180,6 +180,14 @@ export function Header() {
                 Agent activity
               </NavigationMenuLink>
             </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                className={`${navigationMenuTriggerStyle()} text-[14px] text-muted-foreground hover:text-foreground`}
+                render={<Link href="/purchase-runtime" />}
+              >
+                Runtime
+              </NavigationMenuLink>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
 
@@ -188,7 +196,7 @@ export function Header() {
           <Button
             nativeButton={false}
             render={<Link href="/agent-activity" />}
-            className="hidden h-10 rounded-full bg-brand px-4 text-[14px] text-brand-foreground hover:bg-brand/90 sm:inline-flex"
+            className="hidden h-11 rounded-full bg-brand px-4 text-[14px] text-brand-foreground hover:bg-brand/90 sm:inline-flex"
           >
             Try the demo
           </Button>
@@ -302,6 +310,13 @@ export function Header() {
                       icon={Bot}
                       title="Agent activity"
                       desc="Watch them reason & buy"
+                      onNavigate={closeMobile}
+                    />
+                    <NavRow
+                      href="/purchase-runtime"
+                      icon={Bot}
+                      title="Purchase runtime"
+                      desc="Live purchase workbench"
                       onNavigate={closeMobile}
                     />
                     <NavRow
