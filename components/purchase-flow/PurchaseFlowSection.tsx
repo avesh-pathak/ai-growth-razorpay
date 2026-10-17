@@ -1,11 +1,10 @@
 "use client";
 
 // components/purchase-flow/PurchaseFlowSection.tsx
-// "How a purchase flows" — a live transaction replay: the Merchant Agent
-// sells, the Policy Gate authorizes, the Buyer Agent buys. The hero keeps the
-// isometric figure; this section is a software demonstration of the flow.
+// "How a purchase flows" — a visual transaction workbench: the Merchant Agent
+// assembles a proposal, policy interlocks vet it, and checkout prints a receipt.
 
-import { ReplayPanel } from "./replay/ReplayPanel";
+import { PurchaseJourney } from "./journey/PurchaseJourney";
 
 export function PurchaseFlowSection() {
   return (
@@ -16,18 +15,16 @@ export function PurchaseFlowSection() {
             How a purchase flows
           </h2>
           <p className="mt-4 text-[1.125rem] leading-[1.6] text-muted-foreground">
-            A Merchant Agent sells, a Buyer Agent buys, and a Policy Gate decides. Every step is logged and receipted.
+            Agents shop. Your rules decide.
           </p>
         </div>
 
         <div className="mt-12">
-          <ReplayPanel />
+          <PurchaseJourney />
         </div>
 
         <p className="mt-8 max-w-[46rem] text-[13px] leading-[1.6] text-muted-foreground">
-          The simulation runs on illustrative demo data — a fixed-seed catalog, example mandates and counters, amounts in integer
-          paise straight from the seed prices. The production Policy Gate is a server-side module (not built yet), and nothing on
-          this page can move money.
+          Interactive demo, not a live checkout. No real money moves.
         </p>
       </div>
     </section>
