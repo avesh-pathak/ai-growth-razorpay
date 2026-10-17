@@ -21,9 +21,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SlashCheckout — agentic commerce, explainable by design",
+  title: "SlashCheckout — AI makes the sale. You set the limits.",
   description:
-    "A store where a Merchant Agent sells and a Buyer Agent buys, every money action gated, bounded, and receipted.",
+    "See AI agents sell and buy within spending limits and pricing rules you control. Explore the SlashCheckout test-mode demo; no real money moves.",
 };
 
 export const viewport = {
