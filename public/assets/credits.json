@@ -1,0 +1,72 @@
+[
+ {
+  "file": "assets/espresso-machine-1.jpg",
+  "media": "image",
+  "ref": "openverse:c3dab687-2216-4312-9e2b-af4d87953470",
+  "title": "Espresso machine 1",
+  "creator": "No machine-readable author provided. Herr Andrax~commonswiki assumed (based on copyright claims).",
+  "creatorUrl": "https://commons.wikimedia.org/w/index.php?title=User:Herr_Andrax~commonswiki&action=edit&redlink=1",
+  "date": null,
+  "license": "CC BY-SA 3.0",
+  "licenseCode": "by-sa",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "creditRequired": true,
+  "page": "https://commons.wikimedia.org/w/index.php?curid=594648",
+  "via": "Wikimedia Commons",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Espresso_machine_1.jpg/1920px-Espresso_machine_1.jpg",
+  "width": 1920,
+  "height": 1440,
+  "bytes": 388454,
+  "credit": "\"Espresso machine 1\" by No machine-readable author provided. Herr Andrax~commonswik…, CC BY-SA 3.0, via Wikimedia Commons",
+  "notes": [
+   "Share-alike: an altered version (recoloured, combined with other pictures) must be shared under the same licence."
+  ],
+  "saved": "2026-10-17T11:45:03.523Z"
+ },
+ {
+  "file": "assets/espresso-coffee-gear.jpg",
+  "media": "image",
+  "ref": "commons:159229850",
+  "title": "Espresso Coffee Gear",
+  "creator": "TheHolyCessna553",
+  "creatorUrl": null,
+  "date": "2025-02-06",
+  "license": "CC0",
+  "licenseCode": "cc0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "creditRequired": false,
+  "page": "https://commons.wikimedia.org/wiki/File:Espresso_Coffee_Gear.jpg",
+  "via": "Wikimedia Commons",
+  "image": "https://upload.wikimedia.org/wikipedia/commons/2/28/Espresso_Coffee_Gear.jpg",
+  "width": 1000,
+  "height": 653,
+  "bytes": 114758,
+  "credit": "\"Espresso Coffee Gear\" by TheHolyCessna553, CC0, via Wikimedia Commons",
+  "notes": [],
+  "saved": "2026-10-17T11:45:04.135Z"
+ },
+ {
+  "file": "assets/peaberry-coffee-beans-close-up.jpg",
+  "media": "image",
+  "ref": "openverse:a11b0dcb-f8cc-4cfd-92cc-f8177e6ab531",
+  "title": "Peaberry coffee beans, close up",
+  "creator": "Ragesoss",
+  "creatorUrl": "https://commons.wikimedia.org/wiki/User:Ragesoss",
+  "date": null,
+  "license": "CC BY-SA 3.0",
+  "licenseCode": "by-sa",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+  "creditRequired": true,
+  "page": "https://commons.wikimedia.org/w/index.php?curid=5704390",
+  "via": "Wikimedia Commons",
+  "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Peaberry_coffee_beans%2C_close_up.jpg/1920px-Peaberry_coffee_beans%2C_close_up.jpg",
+  "width": 1920,
+  "height": 1279,
+  "bytes": 524009,
+  "credit": "\"Peaberry coffee beans, close up\" by Ragesoss, CC BY-SA 3.0, via Wikimedia Commons",
+  "notes": [
+   "Share-alike: an altered version (recoloured, combined with other pictures) must be shared under the same licence."
+  ],
+  "saved": "2026-10-17T11:45:09.721Z"
+ }
+]

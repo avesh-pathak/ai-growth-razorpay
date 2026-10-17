@@ -79,7 +79,7 @@ See `.env` (gitignored). Required:
 | `RAZORPAY_WEBHOOK_SECRET` | Webhook signature verification secret |
 | `NEXT_PUBLIC_RAZORPAY_KEY_ID` | Razorpay key ID exposed to the browser |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon/public key |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable (anon) key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (server-only, never exposed) |
 
 **Rules:** never commit `.env`. Never log or return secret values. Never put keys in client bundles. Razorpay is test-mode only (no KYC, no live money).
