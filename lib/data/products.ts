@@ -1,4 +1,4 @@
-// lib/data/products.ts — deterministic seed of Settle SKUs.
+// lib/data/products.ts — deterministic seed of SlashCheckout SKUs.
 // Money is integer subunits (paise). Cost/list/margin are authoritative server-side.
 
 export type Product = {
@@ -19,7 +19,7 @@ export type Product = {
   attributes: Record<string, string>;
 };
 
-const img = (n: number) => `https://picsum.photos/seed/settle-${n}/640/640`;
+const img = (n: number) => `https://picsum.photos/seed/slashcheckout-${n}/640/640`;
 
 export const PRODUCTS: Product[] = [
   // Brewers

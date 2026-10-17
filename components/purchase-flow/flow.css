@@ -1,0 +1,527 @@
+/* components/purchase-flow/flow.css
+   Tokens and state styling for the agentic-commerce scene.
+   The kit (components/iso/iso.css) paints the solids; this file maps them onto
+   the app's card, defines the two surface scopes (a dark device screen and a
+   light paper slip) and the state contracts the live layer toggles: rule dots,
+   the shield, the emitter, the budget bar and the identity inks. */
+
+/* scene tokens ------------------------------------------------------------- */
+
+.iso.flowfig {
+  --anatomy-paper: var(--card);
+  /* identity inks */
+  --sc-merchant: #7c3aed;
+  --sc-buyer: #0e91b4;
+  --sc-gate: var(--brand);
+  --sc-ok: var(--positive);
+  --sc-bad: var(--destructive);
+  --sc-amber: #b45309;
+  --sc-screen: #16161c;
+}
+
+.iso.flowfig[data-theme="dark"] {
+  --sc-merchant: #a78bfa;
+  --sc-buyer: #38bdf8;
+  --sc-amber: #f59e0b;
+  --sc-screen: #0b0b10;
+}
+
+/* light-mode modelling: a hair more separation between faces, tops a touch
+   off-white so they read against the pure-white card ---------------------- */
+
+.iso.flowfig[data-theme="light"] {
+  --anatomy-shade-0: #d6d6d2;
+  --anatomy-shade-1: #e1e1dd;
+  --anatomy-shade-2: #ebebe8;
+  --anatomy-shade-3: #f4f4f1;
+  --anatomy-top: #fcfcfa;
+}
+
+/* the device screen: a dark panel with light text --------------------------- */
+
+.iso.flowfig .sc-screen-scope {
+  --anatomy-hi: #f4f4f5;
+  --anatomy-mid: #b9b9c0;
+  --anatomy-lo: #8f8f98;
+  --anatomy-faint: #5b5b66;
+  --sc-hairline: rgb(255 255 255 / 0.13);
+}
+
+.iso.flowfig .sc-glass {
+  fill: var(--sc-screen);
+  stroke: rgb(255 255 255 / 0.07);
+  stroke-width: 0.6;
+}
+
+.iso.flowfig .sc-rule {
+  fill: none;
+  stroke: var(--sc-hairline, var(--anatomy-faint));
+  stroke-width: 0.6;
+}
+
+.iso.flowfig .sc-tile-store,
+.iso.flowfig .sc-tile-cat {
+  fill: rgb(255 255 255 / 0.045);
+  stroke: rgb(255 255 255 / 0.1);
+  stroke-width: 0.4;
+}
+
+.iso.flowfig .sc-chipbg {
+  fill: rgb(255 255 255 / 0.05);
+  stroke: rgb(255 255 255 / 0.1);
+  stroke-width: 0.4;
+}
+
+.iso.flowfig .sc-pill {
+  fill: rgb(255 255 255 / 0.04);
+  stroke: rgb(255 255 255 / 0.12);
+  stroke-width: 0.4;
+}
+
+.iso.flowfig .sc-slot {
+  fill: rgb(0 0 0 / 0.55);
+  stroke: rgb(255 255 255 / 0.16);
+  stroke-width: 0.5;
+}
+
+.iso.flowfig .sc-mag {
+  fill: var(--sc-screen);
+}
+
+.iso.flowfig .sc-chip-sm {
+  fill: #cf9a3a;
+}
+
+/* paper: light in both themes — a physical slip on a dark card --------------- */
+
+.iso.flowfig .sc-paper {
+  --anatomy-paper: #f7f5f0;
+  --anatomy-top: #fdfcf8;
+  --anatomy-shade-0: #d9d5c9;
+  --anatomy-shade-1: #e5e1d6;
+  --anatomy-shade-2: #eeebe2;
+  --anatomy-shade-3: #f4f2ea;
+  --anatomy-lit-top: #fdfcf8;
+  --anatomy-lit-shade: #e5e1d6;
+  --anatomy-lit: #26262a;
+  --anatomy-hi: #26262a;
+  --anatomy-mid: #5f6068;
+  --anatomy-lo: #8f9089;
+  --anatomy-faint: #b9b8ad;
+  --sc-ok: #1e8f5c;
+  --sc-bad: #c4433f;
+  --sc-hairline: rgb(24 24 28 / 0.16);
+}
+
+.iso.flowfig .sc-stamp {
+  fill: none;
+  stroke: rgb(24 24 28 / 0.32);
+  stroke-width: 0.5;
+  stroke-dasharray: 2 1.6;
+}
+
+/* icon glyphs -------------------------------------------------------------- */
+
+.iso.flowfig .sc-glyph path,
+.iso.flowfig .sc-glyph rect,
+.iso.flowfig .sc-glyph ellipse,
+.iso.flowfig .sc-glyph circle {
+  fill: none;
+  stroke: var(--anatomy-mid);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.iso.flowfig .sc-glyph > :first-child {
+  stroke: var(--sc-accent, var(--anatomy-hi));
+}
+
+.iso.flowfig .sc-accent-m {
+  --sc-accent: var(--sc-merchant);
+}
+
+.iso.flowfig .sc-accent-b {
+  --sc-accent: var(--sc-buyer);
+}
+
+/* semantic face text (the kit only ships hi/mid/lo/faint) -------------------- */
+
+.iso.flowfig .iso-face-text[data-tone="green"] {
+  fill: var(--sc-ok);
+}
+
+.iso.flowfig .iso-face-text[data-tone="red"] {
+  fill: var(--sc-bad);
+}
+
+/* static semantic text rides in wrapper groups (typed tones stay hi/mid/lo) --- */
+
+.iso.flowfig .sc-ok .iso-face-text {
+  fill: var(--sc-ok);
+}
+
+.iso.flowfig .sc-bad .iso-face-text {
+  fill: var(--sc-bad);
+}
+
+.iso.flowfig .sc-check {
+  fill: none;
+  stroke: var(--sc-ok);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* identity inks on hairlines and engraved labels ----------------------------- */
+
+.iso.flowfig .iso-line.sc-ink-m {
+  stroke: var(--sc-merchant);
+}
+
+.iso.flowfig .iso-line.sc-ink-g {
+  stroke: var(--sc-gate);
+}
+
+.iso.flowfig .iso-line.sc-ink-b {
+  stroke: var(--sc-buyer);
+}
+
+.iso.flowfig .iso-line.sc-ink-red {
+  stroke: var(--sc-bad);
+}
+
+.iso.flowfig .sc-label-m .iso-face-text {
+  fill: var(--sc-merchant);
+  opacity: 0.9;
+}
+
+.iso.flowfig .sc-label-g .iso-face-text {
+  fill: var(--sc-gate);
+  opacity: 0.9;
+}
+
+.iso.flowfig .sc-label-b .iso-face-text {
+  fill: var(--sc-buyer);
+  opacity: 0.9;
+}
+
+/* live lanes: only the lane carrying the current packet flows ---------------- */
+
+.iso.flowfig .sc-flow {
+  opacity: 0;
+  transition: opacity 320ms var(--anatomy-ease);
+}
+
+.iso.flowfig .sc-flow[data-flow] {
+  opacity: 0.9;
+}
+
+/* rule rail + mandate lamps -------------------------------------------------- */
+
+.iso.flowfig .sc-rule-dot,
+.iso.flowfig .sc-mandate-dot {
+  fill: var(--anatomy-faint);
+  stroke: none;
+  opacity: 0.5;
+  transition: fill 260ms var(--anatomy-ease), stroke 260ms var(--anatomy-ease), opacity 260ms var(--anatomy-ease);
+}
+
+.iso.flowfig .sc-rule-dot[data-state="passed"],
+.iso.flowfig .sc-mandate-dot[data-state="passed"] {
+  fill: var(--sc-ok);
+  opacity: 1;
+}
+
+.iso.flowfig .sc-rule-dot[data-state="failed"],
+.iso.flowfig .sc-mandate-dot[data-state="failed"] {
+  fill: var(--sc-bad);
+  opacity: 1;
+}
+
+.iso.flowfig .sc-rule-dot[data-state="skipped"],
+.iso.flowfig .sc-mandate-dot[data-state="skipped"] {
+  fill: none;
+  stroke: var(--anatomy-faint);
+  stroke-width: 0.9;
+  stroke-dasharray: 1.4 1.7;
+  opacity: 0.65;
+}
+
+/* emitter: brand dot that blinks only while evaluating ----------------------- */
+
+.iso.flowfig .sc-emitter-dot {
+  fill: var(--sc-gate);
+  opacity: 0.35;
+}
+
+.iso.flowfig[data-gate="checking"] .sc-emitter-dot {
+  opacity: 1;
+  animation: sc-blink 1.3s ease-in-out infinite;
+}
+
+@keyframes sc-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* shield: outline always, check + wash on approval ---------------------------- */
+
+.iso.flowfig .sc-shield {
+  fill: none;
+  stroke: var(--anatomy-lo);
+  stroke-width: 1.1;
+  transition: stroke 300ms var(--anatomy-ease);
+}
+
+.iso.flowfig .sc-shield-inner {
+  fill: none;
+  stroke: var(--anatomy-faint);
+  stroke-width: 0.55;
+  stroke-dasharray: 2.4 2.4;
+}
+
+.iso.flowfig .sc-shield-fill {
+  fill: var(--sc-ok);
+  stroke: none;
+  opacity: 0;
+}
+
+.iso.flowfig .sc-shield-check {
+  fill: none;
+  stroke: var(--sc-ok);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+}
+
+.iso.flowfig[data-gate="approved"] .sc-shield {
+  stroke: var(--sc-ok);
+}
+
+.iso.flowfig[data-gate="blocked"] .sc-shield {
+  stroke: var(--sc-bad);
+}
+
+/* offer lamp on the merchant's pill ------------------------------------------ */
+
+.iso.flowfig .sc-offer-dot {
+  fill: var(--sc-amber);
+  transition: fill 260ms var(--anatomy-ease);
+}
+
+.iso.flowfig .sc-offer-dot[data-state="ready"] {
+  fill: var(--sc-ok);
+}
+
+.iso.flowfig .sc-offer-dot[data-state="blocked"] {
+  fill: var(--sc-bad);
+}
+
+/* storefront status lamp ------------------------------------------------------ */
+
+.iso.flowfig .sc-store-dot {
+  fill: var(--anatomy-mid);
+  opacity: 0.7;
+  transition: fill 260ms var(--anatomy-ease), opacity 260ms var(--anatomy-ease);
+}
+
+.iso.flowfig[data-merchant="listening"] .sc-store-dot {
+  opacity: 0.9;
+}
+
+.iso.flowfig[data-merchant="proposing"] .sc-store-dot {
+  fill: var(--sc-amber);
+  opacity: 1;
+}
+
+.iso.flowfig[data-merchant="ready"] .sc-store-dot {
+  fill: var(--sc-ok);
+  opacity: 1;
+}
+
+.iso.flowfig[data-merchant="paused"] .sc-store-dot {
+  fill: var(--sc-bad);
+  opacity: 1;
+}
+
+/* in-scene cursors ------------------------------------------------------------ */
+
+.iso.flowfig .sc-cursor path {
+  fill: var(--anatomy-hi);
+  stroke: var(--sc-screen);
+  stroke-width: 0.5;
+  stroke-linejoin: round;
+}
+
+/* buyer budget bar ------------------------------------------------------------ */
+
+.iso.flowfig .sc-bar-track {
+  fill: rgb(255 255 255 / 0.09);
+}
+
+.iso.flowfig .sc-bar-fill {
+  fill: var(--anatomy-mid);
+  transition: fill 260ms var(--anatomy-ease);
+}
+
+.iso.flowfig [data-over] .sc-bar-fill {
+  fill: var(--sc-bad);
+}
+
+.iso.flowfig .sc-bar-cap {
+  stroke: rgb(255 255 255 / 0.32);
+  stroke-width: 0.8;
+}
+
+/* riders: the proposal slab wears the merchant ink, the chip the buyer ink ----- */
+
+.iso.flowfig .sc-doc .iso-top {
+  fill: var(--sc-merchant);
+}
+
+.iso.flowfig .sc-chip-packet .iso-top {
+  fill: var(--sc-buyer);
+  transition: fill 300ms var(--anatomy-ease);
+}
+
+.iso.flowfig .sc-chip-packet[data-red] .iso-top {
+  fill: var(--sc-bad);
+}
+
+.iso.flowfig .sc-chip-pin {
+  fill: var(--sc-screen);
+}
+
+/* card chrome ------------------------------------------------------------------ */
+
+.sc-zones {
+  position: absolute;
+  inset: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.sc-zone {
+  border-radius: 16px;
+  outline: none;
+  cursor: pointer;
+  transition: background 160ms var(--anatomy-ease), box-shadow 160ms var(--anatomy-ease);
+}
+
+.sc-zone:hover {
+  background: color-mix(in srgb, var(--brand) 4%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 16%, transparent);
+}
+
+.sc-zone[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--brand) 6%, transparent);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--brand) 32%, transparent);
+}
+
+.sc-zone:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--ring);
+}
+
+.sc-inspector {
+  position: absolute;
+  top: 10px;
+  z-index: 30;
+  width: min(340px, calc(100% - 24px));
+  animation: sc-pop 200ms var(--anatomy-ease) both;
+}
+
+.sc-inspector-left {
+  left: 12px;
+}
+
+.sc-inspector-center {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.sc-inspector-right {
+  right: 12px;
+}
+
+@keyframes sc-pop {
+  from {
+    opacity: 0;
+    translate: 0 5px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* header activity lamp ----------------------------------------------------------- */
+
+.sc-led[data-on] {
+  background: var(--brand);
+  animation: sc-led 1.5s ease-in-out infinite;
+}
+
+@keyframes sc-led {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* reduced motion ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .iso.flowfig .sc-flow[data-flow] {
+    animation: none;
+    opacity: 0.5;
+  }
+
+  .iso.flowfig .sc-emitter-dot,
+  .iso.flowfig[data-gate="checking"] .sc-emitter-dot {
+    animation: none;
+  }
+
+  .iso.flowfig .sc-flow,
+  .iso.flowfig .sc-rule-dot,
+  .iso.flowfig .sc-mandate-dot,
+  .iso.flowfig .sc-offer-dot,
+  .iso.flowfig .sc-store-dot,
+  .iso.flowfig .sc-bar-fill,
+  .iso.flowfig .sc-shield,
+  .iso.flowfig .sc-chip-packet .iso-top {
+    transition-duration: 1ms;
+  }
+
+  .sc-led[data-on],
+  .sc-inspector {
+    animation: none;
+  }
+
+  .sc-zone {
+    transition: none;
+  }
+}
+
+/* small screens: the inspector docks to the bottom of the viewport ---------------- */
+
+@media (max-width: 639px) {
+  .sc-inspector {
+    left: 12px;
+    right: 12px;
+    top: auto;
+    bottom: 10px;
+    width: auto;
+    transform: none;
+  }
+}

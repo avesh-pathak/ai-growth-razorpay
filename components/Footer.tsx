@@ -6,7 +6,7 @@ export function Footer() {
     { title: "Platform", links: [{ label: "Merchant Agent", href: "/agent-activity" }, { label: "Buyer Agent", href: "/agent-activity" }, { label: "Policy Gate", href: "/dashboard" }, { label: "Receipts", href: "/dashboard" }, { label: "Audit Trail", href: "/dashboard" }] },
     { title: "Developers", links: [{ label: "API Reference", href: "#" }, { label: "Machine Surface", href: "#" }, { label: "Protocol Mapping", href: "#" }, { label: "Tamper Tester", href: "#" }, { label: "Docs", href: "#" }] },
     { title: "Product", links: [{ label: "Dashboard", href: "/dashboard" }, { label: "Catalog", href: "/products" }, { label: "Checkout", href: "/checkout" }, { label: "Agent Activity", href: "/agent-activity" }] },
-    { title: "Company", links: [{ label: "Pricing", href: "#" }, { label: "Enterprise", href: "#" }, { label: "Community", href: "#" }, { label: "support@settle.dev", href: "mailto:support@settle.dev" }] },
+    { title: "Company", links: [{ label: "Pricing", href: "#" }, { label: "Enterprise", href: "#" }, { label: "Community", href: "#" }, { label: "support@slashcheckout.dev", href: "mailto:support@slashcheckout.dev" }] },
   ];
 
   return (
@@ -72,7 +72,7 @@ export function Footer() {
             <span className="text-sm text-muted-foreground">Agentic commerce, explainable by design.</span>
           </div>
           <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-            <span>© 2026 Settle</span>
+            <span>© 2026 SlashCheckout</span>
             <Link href="#" className="hover:text-foreground transition-colors">Terms of Service</Link>
             <Link href="#" className="hover:text-foreground transition-colors">Privacy policy</Link>
           </div>

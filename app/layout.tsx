@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Settle — agentic commerce, explainable by design",
+  title: "SlashCheckout — agentic commerce, explainable by design",
   description:
     "A store where a Merchant Agent sells and a Buyer Agent buys, every money action gated, bounded, and receipted.",
 };
@@ -43,7 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Pre-paint theme sync — applies stored dark theme before first paint (no flash, no hydration mismatch) */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem('settle-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}`,
+            __html: `try{if(localStorage.getItem('slashcheckout-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}`,
           }}
         />
         <ThemeProvider>

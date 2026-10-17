@@ -1,9 +1,10 @@
 ﻿"use client";
 
 import Link from "next/link";
-import type { CSSProperties } from "react";
-import { ArrowRight, Bot, Link2, MousePointerClick, ShieldCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { PRODUCTS } from "@/lib/data/products";
+import { PurchaseFlowSection } from "@/components/purchase-flow/PurchaseFlowSection";
+import { CommerceHero } from "@/components/purchase-flow/scene/live";
 
 export default function Home() {
   return (
@@ -39,105 +40,17 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Compact audit mock */}
-            <div className="bg-card border border-border rounded-2xl p-1">
-              <div className="rounded-[calc(1.25rem-0.25rem)] bg-background/60 p-4">
-                <div className="flex items-center gap-2 border-b border-border pb-3">
-                  <span className="size-2 rounded-full bg-destructive/70" />
-                  <span className="size-2 rounded-full bg-brand-accent/70" />
-                  <span className="size-2 rounded-full bg-positive/70" />
-                  <span className="ml-2 font-mono text-[10px] text-muted-foreground">settle · audit trail</span>
-                </div>
-                <div className="mt-3 flex flex-col gap-1.5">
-                  {[
-                    { a: "buyer-agent", act: "checkout.completed", v: "allowed" },
-                    { a: "policy-gate", act: "evaluate", v: "allowed" },
-                    { a: "merchant-agent", act: "proposal.blocked", v: "blocked" },
-                    { a: "buyer-agent", act: "quote.requested", v: "allowed" },
-                  ].map((r, i) => (
-                    <div key={i} className="flex items-center justify-between rounded-lg border border-border bg-secondary px-3 py-2">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="font-mono text-[10px] text-muted-foreground shrink-0">{r.a}</span>
-                        <span className="font-mono text-[10px] text-foreground truncate">{r.act}</span>
-                      </div>
-                      <span className={`shrink-0 rounded-full px-2 py-0.5 text-[9px] font-medium ${r.v === "blocked" ? "bg-destructive/10 text-destructive" : "bg-positive/10 text-positive"}`}>
-                        {r.v}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            {/* The commerce loop, running itself */}
+            <CommerceHero />
           </div>
         </div>
       </section>
 
-      {/* Trust strip — one gate, one chain */}
-      <section className="dark border-y border-border bg-[#111113]">
-        <div className="max-w-frame mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32">
-          <ul role="list" className="flex flex-col gap-6 py-8 sm:grid sm:grid-cols-4 sm:gap-8 sm:py-12 lg:gap-12">
-            {[
-              { k: "7", v: "gate rules", Icon: ShieldCheck, hue: "text-brand" },
-              { k: "2", v: "agents, one gate", Icon: Bot, hue: "text-brand-secondary" },
-              { k: "0", v: "human clicks", Icon: MousePointerClick, hue: "text-brand-tertiary" },
-              { k: "All", v: "receipts chained", Icon: Link2, hue: "text-brand-quaternary" },
-            ].map((s, i) => (
-              <li key={s.v} className="relative flex items-center gap-3 sm:flex-col sm:items-start sm:gap-0">
-                {i < 3 && (
-                  <span
-                    aria-hidden
-                    className="absolute left-[13.5px] top-1/2 -bottom-10 w-px bg-foreground/20 sm:top-[13.5px] sm:bottom-auto sm:right-[-46px] sm:h-px sm:w-auto lg:right-[-62px]"
-                  />
-                )}
-                <span
-                  className={`verify-chip relative inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-current ring-2 ring-[#111113] ${s.hue}`}
-                  style={{ "--station": i } as CSSProperties}
-                >
-                  <s.Icon className="size-3.5 text-[#111113]" aria-hidden />
-                </span>
-                <span className="flex items-baseline gap-2.5 sm:mt-4 sm:flex-col sm:items-start sm:gap-1.5">
-                  <span className="font-heading text-[2rem] font-medium leading-none tracking-[-0.02em] text-foreground tabular-nums sm:text-[2.25rem]">
-                    {s.k}
-                  </span>
-                  <span className="font-mono text-[12px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
-                    {s.v}
-                  </span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {/* How a purchase flows — three working machines */}
+      <PurchaseFlowSection />
 
-      {/* How it works */}
-      <section id="how-it-works" className="scroll-mt-20 py-24">
-        <div className="max-w-frame mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32">
-          <div className="max-w-[42rem]">
-            <h2 className="text-[clamp(2rem,4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground">
-              Three steps, end to end
-            </h2>
-            <p className="mt-4 text-[1.125rem] leading-[1.6] text-muted-foreground">
-              A Merchant Agent sells, a Buyer Agent buys, and a Policy Gate decides. Every step logged and receipted.
-            </p>
-          </div>
-          <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
-            {[
-              { n: "One", t: "Merchant Agent sells", d: "A shopper chats in plain language. The agent proposes bundles. Every proposal is gate-checked before display." },
-              { n: "Two", t: "Buyer Agent buys", d: "An autonomous agent fetches the catalog, plans a cart, quotes, checks both mandates, checks out. Zero human clicks." },
-              { n: "Three", t: "Policy Gate decides", d: "Seven rules, both mandates, margin floors, caps, velocity. First failure wins. Reason code attached." },
-            ].map((s) => (
-              <div key={s.n} className="rounded-2xl border border-border bg-card p-6">
-                <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-brand">{s.n}</span>
-                <h3 className="mt-3 text-[1.25rem] font-semibold tracking-[-0.02em] text-foreground">{s.t}</h3>
-                <p className="mt-2 text-[1rem] leading-[1.6] text-muted-foreground">{s.d}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Trust spine — asymmetrical bento */}
-      <section className="py-24">
+      {/* Trust spine — warm band, station-hued bento */}
+      <section className="trust-band border-y border-border py-24">
         <div className="max-w-frame mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32">
           <div className="max-w-[42rem]">
             <h2 className="text-[clamp(2rem,4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground">
@@ -148,32 +61,40 @@ export default function Home() {
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-border bg-card p-6 md:col-span-2">
+            <div data-station="gate" className="trust-card rounded-2xl bg-card p-7 md:col-span-2">
               <h3 className="text-[1.25rem] font-semibold tracking-[-0.02em] text-foreground">Policy Gate</h3>
               <p className="mt-2 text-[1rem] leading-[1.6] text-muted-foreground">
-                Deterministic, deny-by-default. Seven rules: mandate validity, category whitelist, price source-of-truth, margin floor, per-order cap, rolling daily cap, velocity. First failure wins.
+                Deterministic, deny-by-default. Seven rules, checked in precedence order. First failure wins.
               </p>
+              <ul role="list" className="mt-5 flex flex-wrap gap-2">
+                {["mandate validity", "category whitelist", "price source-of-truth", "margin floor", "per-order cap", "rolling daily cap", "velocity"].map((rule, i) => (
+                  <li key={rule} className="rounded-sm border border-border px-2 py-1 font-mono text-[12px] uppercase leading-4 tracking-[0.02em] tabular-nums text-foreground/80">
+                    <span className="text-muted-foreground">{String(i + 1).padStart(2, "0")}</span> {rule}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div data-station="mandate" className="trust-card rounded-2xl bg-card p-6">
               <h3 className="text-[1.25rem] font-semibold tracking-[-0.02em] text-foreground">Mandates</h3>
               <p className="mt-2 text-[1rem] leading-[1.6] text-muted-foreground">
                 Signed, scoped, time-bounded. Buyer may narrow, never widen.
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div data-station="receipt" className="trust-card rounded-2xl bg-card p-6">
               <h3 className="text-[1.25rem] font-semibold tracking-[-0.02em] text-foreground">Receipts</h3>
               <p className="mt-2 text-[1rem] leading-[1.6] text-muted-foreground">
                 Canonical signed JSON plus human view. Hash-chained, append-only.
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-card p-6 md:col-span-2">
+            <div data-station="agents" className="trust-card rounded-2xl bg-card p-6 md:col-span-2">
               <h3 className="text-[1.25rem] font-semibold tracking-[-0.02em] text-foreground">Merchant & Buyer Agents</h3>
               <p className="mt-2 text-[1rem] leading-[1.6] text-muted-foreground">
                 Merchant Agent: conversational selling, gate-checked proposals. Buyer Agent: autonomous purchase, zero human clicks. Both share one Policy Gate.
               </p>
             </div>
           </div>
-          <p className="mt-8 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="mt-8 flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+            <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-brand" />
             Runs entirely on Razorpay test-mode rails · no real money moves
           </p>
         </div>

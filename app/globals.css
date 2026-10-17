@@ -148,32 +148,34 @@
   margin-inline: auto;
 }
 
-/* Gate chain — a verification sweep walks the stat-band stations, in order. */
-@keyframes verify-ping {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  20% {
-    transform: scale(2.1);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(2.1);
-    opacity: 0;
-  }
+/* Trust spine — a warm full-bleed band; each concept card carries its station hue
+   from the gate-chain system (gate / mandate / receipt / agents). */
+.trust-band {
+  --band: color-mix(in oklab, var(--brand) 7%, var(--background));
+  background: var(--band);
 }
 
-.verify-chip::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  border: 1px solid currentColor;
-  opacity: 0;
-  animation: verify-ping 6.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-  animation-delay: calc(var(--station, 0) * 0.55s);
+.trust-card {
+  --station: var(--border);
+  border: 1px solid var(--station);
 }
+
+.trust-card[data-station="gate"] {
+  --station: color-mix(in oklab, var(--brand) 40%, var(--card));
+}
+
+.trust-card[data-station="mandate"] {
+  --station: color-mix(in oklab, var(--brand-tertiary) 30%, var(--card));
+}
+
+.trust-card[data-station="receipt"] {
+  --station: color-mix(in oklab, var(--brand-quaternary) 30%, var(--card));
+}
+
+.trust-card[data-station="agents"] {
+  --station: color-mix(in oklab, var(--brand-secondary) 30%, var(--card));
+}
+
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -189,9 +191,15 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    caret-color: var(--brand);
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--brand) 24%, transparent);
+    color: var(--foreground);
   }
   html {
     @apply font-sans;
+    scrollbar-color: color-mix(in oklab, var(--foreground) 30%, var(--background)) var(--background);
   }
   h1, h2, h3, h4 {
     @apply font-heading tracking-[-0.02em];

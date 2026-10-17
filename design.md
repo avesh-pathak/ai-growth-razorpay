@@ -1,11 +1,11 @@
 <!-- Hallmark · macrostructure: Workbench · H8 hero knobs: frame=minimal-hairline, tilt=0°, shots=1
  * nav=N1b canonical SaaS · footer=Ft5 statement over Ft3 index columns
- * theme: studied-DNA (source: url https://www.agno.com/) · paper #ffffff / band #111113 · accent #ff4017
+ * theme: studied-DNA (source: url https://www.agno.com/) · paper #ffffff / band color-mix(brand 7%, paper) · accent #ff4017
  * display: Inter Variable 500 · body: Inter Variable · label: DM Mono (buttons/eyebrows) + Geist Mono (code/meta)
  * studied: yes · DNA-source: url https://www.agno.com/ (public reference for the user's own brand) · extracted 2026-10-17
 -->
 
-# Design — Settle
+# Design — SlashCheckout
 
 Locked design system, seeded from a studied DNA (agno.com). Future runs read this
 file first; pages defer to it. Amend intentionally — the file is the rule.
@@ -83,7 +83,7 @@ rhythm, 1728px frame), not from a visual pass — the known URL-mode blind spot.
 - Sections · alternating full-bleed bands divided by hairlines; content locked to the 108rem frame with the 16→128px gutter scale; heading + lede in a ≤620px column above the content.
 - Proof · logo marquee in bordered 152px cells at 60% opacity; quote card on `--accent`, min-height 308px, H3-size quote, staggered lines.
 - Footer · dark band + grain + brand-glow ellipse (#FF4017 at 10%, blurred 135px, half-dipped below the fold); statement headline at H1 scale; two CTAs; four index columns (14px links, muted 14px headings); legal row.
-- Gate chain (home trust strip) · full-bleed ink band `#111113` with a self-scoped `.dark`; four stations strung on a 1px `foreground/20` rail — horizontal at ≥sm, vertical ledger rows on mobile; node = 28px solid brand-family disc in system order (primary → quaternary) with the ink glyph knocked out and a 2px `#111113` ring; figures near-white, weight 500, tabular; labels Geist Mono 12px uppercase, 0.16em tracked; one ambient motion — `verify-ping` sweeping the chain in order (6.4s cycle, 0.55s stagger per station; the global reduced-motion rule settles it).
+- Gate chain (home trust strip) · full-bleed warm band — the same `trust-band` surface as the trust spine (ink band retired on request; #111113 no longer used on the home page); four stations strung on a 1px `foreground/20` rail — horizontal at ≥sm, vertical ledger rows on mobile; node = 28px solid brand-family disc in system order (primary → quaternary) with the ink glyph knocked out and a 2px band-colored ring (`var(--band)`); figures ink, weight 500, tabular; labels Geist Mono 12px uppercase, 0.16em tracked; one ambient motion — `verify-ping` sweeping the chain in order (6.4s cycle, 0.55s stagger per station; the global reduced-motion rule settles it).
 - Icons · Lucide, 16px, stroke 1.5–2, muted or ink. No emoji.
 
 ## Notes (do NOT carry over)

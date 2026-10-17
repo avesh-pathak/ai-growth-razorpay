@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import {
   Menu,
@@ -116,10 +117,8 @@ export function Header() {
 
       <div className="mx-auto flex h-14 max-w-frame items-center justify-between gap-6 rounded-full border border-border bg-card px-5">
         <Link href="/" className="flex shrink-0 items-center gap-2 text-foreground">
-          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand text-[11px] font-medium text-brand-foreground">
-            S
-          </span>
-          <span className="text-[15px] font-medium tracking-[-0.02em]">Settle</span>
+          <Image src="/slashcheckout-mark.png" alt="" width={28} height={28} className="size-7 shrink-0" priority />
+          <span className="text-[15px] font-medium tracking-[-0.02em]">SlashCheckout</span>
         </Link>
 
         {/* Desktop nav — shadcn NavigationMenu */}
@@ -225,12 +224,10 @@ export function Header() {
             <SheetContent side="right" className="w-[20rem] gap-0 p-0 sm:max-w-[20rem]">
               <SheetHeader className="border-b border-border p-5 pr-14">
                 <SheetTitle className="flex items-center gap-3">
-                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand text-[13px] font-medium text-brand-foreground">
-                    S
-                  </span>
+                  <Image src="/slashcheckout-mark.png" alt="" width={36} height={36} className="size-9 shrink-0" />
                   <span className="flex flex-col items-start gap-1">
                     <span className="text-[15px] font-medium leading-none">
-                      Settle
+                      SlashCheckout
                     </span>
                     <span className="text-[12px] font-normal leading-none text-muted-foreground">
                       Agentic commerce

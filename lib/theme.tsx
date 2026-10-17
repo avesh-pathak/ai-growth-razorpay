@@ -36,7 +36,7 @@ const themeStore = {
   setTheme(theme: Theme) {
     document.documentElement.classList.toggle("dark", theme === "dark");
     try {
-      localStorage.setItem("settle-theme", theme);
+      localStorage.setItem("slashcheckout-theme", theme);
     } catch {
       /* private mode — class still applies for this session */
     }
