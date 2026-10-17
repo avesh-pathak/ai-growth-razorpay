@@ -8,36 +8,37 @@ import { CommerceHero } from "@/components/purchase-flow/scene/live";
 
 export default function Home() {
   return (
-    <main id="main" className="mesh-bg min-h-screen">
+    <main id="main" className="min-h-screen">
       {/* Hero — compact, no empty space */}
       <section className="relative">
-        <div className="max-w-frame mx-auto w-full px-6 sm:px-8 lg:px-12 pt-16 pb-12">
+        <div className="max-w-frame mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32 pt-16 pb-12">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12 items-start">
             <div>
               <h1 className="text-[clamp(3rem,7vw,6rem)] font-semibold leading-[0.95] tracking-[-0.03em] text-foreground">
-                Agentic commerce,<br />
-                <span className="text-foreground/50">explainable by design.</span>
+                Let AI make the sale.<br />
+                <span className="text-foreground/60">You set the limits.</span>
               </h1>
               <p className="mt-6 max-w-[44ch] text-[1.0625rem] leading-[1.6] text-muted-foreground">
-                A store where a Merchant Agent sells and a Buyer Agent buys. Every money action gated, bounded, mandated, and receipted.
+                A selling agent builds the offer. A buying agent checks out. Your spending limits and pricing rules decide what goes through.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link
-                  href="/agent-activity"
-                  className="group inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-brand-foreground transition-all hover:opacity-90"
+                  href="#how-it-works"
+                  className="group inline-flex min-h-11 items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-[14px] font-medium text-brand-foreground transition-all hover:opacity-90"
                 >
-                  Watch the agents run
+                  See it in action
                   <span className="flex size-5 items-center justify-center rounded-full bg-brand-foreground/10 transition-transform group-hover:translate-x-0.5">
                     <ArrowRight className="size-3" />
                   </span>
                 </Link>
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-5 py-2.5 text-[14px] font-medium text-foreground transition-colors hover:bg-muted"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-secondary px-5 py-2.5 text-[14px] font-medium text-foreground transition-colors hover:bg-muted"
                 >
                   Open the dashboard
                 </Link>
               </div>
+              <p className="mt-4 text-[12px] text-muted-foreground">Test-mode demo. No real money moves.</p>
             </div>
 
             {/* The commerce loop, running itself */}
@@ -107,7 +108,7 @@ export default function Home() {
             <h2 className="text-[clamp(2rem,4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground">
               The catalog agents read
             </h2>
-            <Link href="/products" className="text-[14px] font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/products" className="inline-flex shrink-0 items-center whitespace-nowrap text-[14px] font-medium text-muted-foreground transition-colors hover:text-foreground max-sm:min-h-11">
               View all {PRODUCTS.length}
             </Link>
           </div>
@@ -165,7 +166,7 @@ export default function Home() {
                       <span className="font-mono text-[11px] text-foreground truncate">{r.act}</span>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="font-mono text-[10px] text-muted-foreground">{r.rule}</span>
+                      <span className="hidden font-mono text-[10px] text-muted-foreground sm:inline">{r.rule}</span>
                       <span className={`font-mono text-[10px] font-medium ${r.v === "blocked" ? "text-destructive" : "text-positive"}`}>
                         {r.v}
                       </span>
