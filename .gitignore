@@ -46,3 +46,6 @@ next-env.d.ts
 # project glossary (local domain notes)
 GLOSSARY.md
 
+
+# design-taste inspect artifacts
+.taste-skill/
