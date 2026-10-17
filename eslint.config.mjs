@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
       "components/iso/**/*.{ts,tsx}",
       "components/purchase-flow/scene/**/*.{ts,tsx}",
       "components/purchase-flow/replay/**/*.{ts,tsx}",
+      "components/purchase-flow/journey/**/*.{ts,tsx}",
       "lib/purchase-flow/useStory.ts",
     ],
     rules: {
