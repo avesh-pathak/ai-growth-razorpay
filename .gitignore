@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# wayfinding map + spec artifacts (local tracker)
+.scratch/
+
+# project glossary (local domain notes)
+GLOSSARY.md
+
