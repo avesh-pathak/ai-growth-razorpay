@@ -92,7 +92,7 @@ See `.env` (gitignored). Required:
 - **Seed data** from a fixed seed (deterministic) for reproducible demos.
 - **Supabase clients:** use `lib/supabase/client.ts` in Client Components, `lib/supabase/server.ts` in Server Components/Route Handlers/Server Actions. The proxy (`proxy.ts`) refreshes the session — do not remove it.
 - **RLS per role** (owner/admin/viewer) on every Supabase table; server-side writes use the service role (bypass).
-- **Migrations:** SQL files in `supabase/migrations/`, applied via `supabase db push`.
+- **Migrations:** SQL files in `supabase/migrations/`, applied via `supabase db push`. **Always run `supabase db push --dry-run` first** to preview what will be applied and catch breaking changes (dropped columns, type mismatches, constraint violations) before touching the database. Only run the real `supabase db push` after the dry run is clean. Never apply a migration blind.
 
 ## Conventions
 
@@ -112,6 +112,7 @@ See `.env` (gitignored). Required:
 5. **Webhook signature** is HMAC-SHA256 over the **raw body** with the **webhook secret** (not the key secret). Dedupe via `x-razorpay-event-id`.
 6. **All money as integer subunits** (paise/cents). No float arithmetic on money.
 7. **Secrets never in client bundles, never logged, never returned in API responses.**
+8. **Migrations: always dry-run first.** Run `supabase db push --dry-run` before every `supabase db push`. Never apply a migration without previewing it.
 
 ## Spec & wayfinding
 
