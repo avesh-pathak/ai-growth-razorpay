@@ -54,7 +54,7 @@ export function ScenarioPicker({
             aria-pressed={active}
             onClick={() => onChange(scenario.id)}
             className={cn(
-              "rounded-full border px-3 py-1.5 text-[12.5px] font-medium transition-colors outline-none",
+              "rounded-full border px-3 py-1.5 text-[12.5px] font-medium transition-colors outline-none max-sm:min-h-11",
               "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
               active
                 ? "border-brand/50 bg-brand/10 text-foreground"
