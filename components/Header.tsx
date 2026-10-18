@@ -14,6 +14,7 @@ import {
   ShoppingBag,
   ArrowRight,
   ChevronRight,
+  LogOut,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -39,6 +40,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { useCart } from "@/lib/cart";
 import { useTheme } from "@/lib/theme";
+import { useSession } from "@/lib/session";
+import { createClient } from "@/lib/supabase/client";
 
 const PRODUCT_CATS = ["Brewers", "Grinders", "Kettles", "Accessories", "Beans"];
 
@@ -70,19 +73,19 @@ function NavRow({
   title,
   desc,
   onNavigate,
+  onSelect,
 }: {
-  href: string;
+  href?: string;
   icon: LucideIcon;
   title: string;
   desc: string;
   onNavigate?: () => void;
+  onSelect?: () => void;
 }) {
-  return (
-    <Link
-      href={href}
-      onClick={onNavigate}
-      className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-3 transition-colors hover:bg-muted"
-    >
+  const className =
+    "group flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-3 text-left transition-colors hover:bg-muted";
+  const inner = (
+    <>
       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted text-foreground transition-colors group-hover:bg-background">
         <Icon className="size-4" />
       </span>
@@ -94,7 +97,23 @@ function NavRow({
           {desc}
         </span>
       </span>
-      <ChevronRight className="ml-auto size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+      {href && (
+        <ChevronRight className="ml-auto size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+      )}
+    </>
+  );
+
+  if (!href) {
+    return (
+      <button type="button" onClick={onSelect} className={className}>
+        {inner}
+      </button>
+    );
+  }
+
+  return (
+    <Link href={href} onClick={onNavigate} className={className}>
+      {inner}
     </Link>
   );
 }
@@ -102,9 +121,17 @@ function NavRow({
 export function Header() {
   const cart = useCart();
   const { theme, setTheme } = useTheme();
+  const session = useSession();
   const [mobile, setMobile] = useState(false);
   const closeMobile = () => setMobile(false);
   const isDark = theme === "dark";
+
+  async function handleSignOut() {
+    closeMobile();
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  }
 
   return (
     <header className="sticky top-0 z-40 w-full px-4 pt-4 sm:px-6">
@@ -193,6 +220,27 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
+          {session.status === "signed-in" && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSignOut}
+              title={session.email}
+              className="hidden sm:inline-flex text-muted-foreground hover:text-foreground"
+            >
+              Sign out
+            </Button>
+          )}
+          {session.status === "signed-out" && (
+            <Button
+              variant="outline"
+              nativeButton={false}
+              render={<Link href="/login" />}
+              className="hidden sm:inline-flex h-9 rounded-full border border-border px-4 text-[13px] text-foreground hover:bg-muted"
+            >
+              Sign in
+            </Button>
+          )}
           <Button
             nativeButton={false}
             render={<Link href="/agent-activity" />}
@@ -282,6 +330,38 @@ export function Header() {
                       View all products
                       <ArrowRight className="size-3.5" />
                     </Link>
+                  </section>
+
+                  <section className="flex flex-col gap-2">
+                    <p className="px-0.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                      Account
+                    </p>
+                    {session.status === "signed-in" && (
+                      <NavRow
+                        icon={LogOut}
+                        title="Sign out"
+                        desc={session.email}
+                        onSelect={handleSignOut}
+                      />
+                    )}
+                    {session.status === "signed-out" && (
+                      <>
+                        <NavRow
+                          href="/login"
+                          icon={Bot}
+                          title="Sign in"
+                          desc="Merchant or buyer login"
+                          onNavigate={closeMobile}
+                        />
+                        <NavRow
+                          href="/register"
+                          icon={Bot}
+                          title="Register"
+                          desc="Create an account"
+                          onNavigate={closeMobile}
+                        />
+                      </>
+                    )}
                   </section>
 
                   <Separator />

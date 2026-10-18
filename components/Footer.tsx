@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ArrowRight, ShieldCheck } from "lucide-react";
 
 export function Footer() {
   const cols = [
@@ -13,37 +12,7 @@ export function Footer() {
     <footer className="relative overflow-hidden border-t border-border bg-background">
       {/* (glow removed) */}
       <div className="max-w-frame relative mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32">
-        <div className="flex flex-col items-start gap-6 py-20 lg:py-[8.25rem]">
-          <h2 className="max-w-[40rem] text-[clamp(2.25rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground">
-            Let AI make the sale. You set the limits.
-          </h2>
-          <p className="max-w-[40rem] text-[1.125rem] leading-[1.6] text-muted-foreground">
-            See a selling agent build an offer and a buying agent check out—within your spending limits and pricing rules. Test-mode demo; no real money moves.
-          </p>
-          <div className="flex flex-wrap items-center gap-3">
-            <Link
-              href="/agent-activity"
-              className="inline-flex items-center gap-3 rounded-full bg-brand px-6 py-3 text-[14px] font-medium text-brand-foreground transition-opacity hover:opacity-90"
-            >
-              Watch the agents run
-              <span className="flex size-6 items-center justify-center rounded-full bg-brand-foreground/10">
-                <ArrowRight className="size-3.5" />
-              </span>
-            </Link>
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-[14px] font-medium text-foreground transition-colors hover:bg-muted"
-            >
-              Open the dashboard
-            </Link>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <ShieldCheck className="size-4 text-positive" />
-            <span>Policy Gate · Mandates · Receipts · Hash-chained audit trail · Tamper-tested</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-8 border-t border-border py-12 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-8 py-12 md:grid-cols-4">
           {cols.map((c) => (
             <div key={c.title} className="flex min-w-0 flex-col gap-3">
               <h3 className="text-[0.875rem] font-medium text-foreground">{c.title}</h3>
