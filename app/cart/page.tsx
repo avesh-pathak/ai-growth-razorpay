@@ -11,7 +11,7 @@ export default function CartPage() {
 
   if (cart.items.length === 0) {
     return (
-      <div className="max-w-frame mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32 py-[8.25rem]">
+      <div className="max-w-frame mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32 py-14 sm:py-[8.25rem]">
         <div className="flex flex-col items-center gap-6 text-center">
           <div className="flex size-16 items-center justify-center rounded-full bg-muted">
             <ShoppingBag className="size-7 text-muted-foreground" />
@@ -22,7 +22,7 @@ export default function CartPage() {
           <p className="font-sans text-[1.125rem] text-muted-foreground">Add something from the catalog to get started.</p>
           <Link
             href="/products"
-            className="inline-flex h-9 items-center gap-2 rounded-md bg-brand px-4 text-sm font-medium text-brand-foreground shadow-sm transition-opacity hover:opacity-90"
+            className="inline-flex h-11 items-center gap-2 rounded-md bg-brand px-4 text-sm font-medium text-brand-foreground shadow-sm transition-opacity hover:opacity-90 sm:h-9"
           >
             Browse products <ArrowRight className="size-4" />
           </Link>
@@ -32,7 +32,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="max-w-frame mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32 py-[8.25rem]">
+    <div className="max-w-frame mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32 py-14 sm:py-[8.25rem]">
       <h1 className="font-heading text-[clamp(2.5rem,1.5rem+2.5vw,3.75rem)] font-medium leading-[1.2] tracking-[-0.02em] text-primary">
         Your cart
       </h1>
@@ -54,7 +54,7 @@ export default function CartPage() {
                   </div>
                   <button
                     onClick={() => cart.remove(product.id)}
-                    className="text-muted-foreground hover:text-destructive transition-colors"
+                    className="flex size-11 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-destructive sm:size-4"
                     aria-label="Remove"
                   >
                     <Trash2 className="size-4" />
@@ -62,11 +62,11 @@ export default function CartPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 rounded-md border border-border">
-                    <button onClick={() => cart.setQty(product.id, qty - 1)} className="px-2 py-1 text-muted-foreground hover:text-primary">
+                    <button onClick={() => cart.setQty(product.id, qty - 1)} className="flex h-11 min-w-11 items-center justify-center text-muted-foreground hover:text-primary sm:h-auto sm:min-w-0 sm:px-2 sm:py-1">
                       <Minus className="size-3.5" />
                     </button>
                     <span className="min-w-[2ch] text-center text-sm font-medium">{qty}</span>
-                    <button onClick={() => cart.setQty(product.id, qty + 1)} className="px-2 py-1 text-muted-foreground hover:text-primary">
+                    <button onClick={() => cart.setQty(product.id, qty + 1)} className="flex h-11 min-w-11 items-center justify-center text-muted-foreground hover:text-primary sm:h-auto sm:min-w-0 sm:px-2 sm:py-1">
                       <Plus className="size-3.5" />
                     </button>
                   </div>
@@ -97,7 +97,7 @@ export default function CartPage() {
           </div>
           <Link
             href="/checkout"
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-brand px-4 text-sm font-medium text-brand-foreground shadow-sm transition-opacity hover:opacity-90"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-brand px-4 text-sm font-medium text-brand-foreground shadow-sm transition-opacity hover:opacity-90 sm:h-10"
           >
             Proceed to checkout <ArrowRight className="size-4" />
           </Link>
