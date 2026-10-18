@@ -64,7 +64,7 @@ function StatusPill({ children, tone }: { children: React.ReactNode; tone: "posi
 
 export default function PurchaseRuntimePage() {
   return (
-    <main id="main" className="min-h-screen bg-background">
+    <main id="main" className="min-h-[calc(100dvh-4.5rem)] bg-background">
       <div className="max-w-frame mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32 py-8 sm:py-12">
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-full border border-border bg-card px-5 py-3 shadow-sm">
           <div className="flex items-center gap-2">
