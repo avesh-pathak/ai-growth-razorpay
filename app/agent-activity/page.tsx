@@ -1,109 +1,224 @@
-// app/agent-activity/page.tsx
-import { Brain, CheckCircle2, XCircle, AlertTriangle, Clock } from "lucide-react";
+// app/agent-activity/page.tsx - Agent activity view (real reasoning traces, proposal log, mandate/receipt chain)
 
-const RUNS = [
-  {
-    id: "run_001",
-    goal: "Buy a pour-over setup under ₹3,000",
-    budget: 300000,
-    status: "completed",
-    steps: [
-      { t: "thought", text: "Goal: pour-over setup under ₹3,000. Need brewer + filters + maybe grinder." },
-      { t: "tool", text: "fetch_catalog({category:'Brewers'}) → 6 items" },
-      { t: "tool", text: "fetch_catalog({category:'Accessories'}) → 8 items" },
-      { t: "decision", text: "Pick V60 Dripper 02 (₹1,899) + 100 filters (₹499) = ₹2,398. Under budget." },
-      { t: "tool", text: "request_quote({items:[v60, filters]}) → ₹2,398, stock ok" },
-      { t: "tool", text: "check_mandate({max_per_order:300000}) → allowed" },
-      { t: "tool", text: "checkout({quote_ref}) → order ord_8f2a1c, payment captured" },
-      { t: "decision", text: "Purchase complete. Receipt R-441 issued. Audit trail updated." },
-    ],
-  },
-  {
-    id: "run_002",
-    goal: "Buy an espresso starter kit under ₹5,000",
-    budget: 500000,
-    status: "completed-with-block",
-    steps: [
-      { t: "thought", text: "Goal: espresso starter kit under ₹5,000. Need machine-adjacent gear (tamper, pitcher, distribution tool)." },
-      { t: "tool", text: "fetch_catalog({category:'Accessories'}) → 8 items" },
-      { t: "decision", text: "Pick tamper 58mm (₹1,999) + milk pitcher (₹1,299) + WDT (₹1,499) = ₹4,797." },
-      { t: "tool", text: "request_quote → ₹4,797, stock ok" },
-      { t: "tool", text: "check_mandate → allowed" },
-      { t: "tool", text: "checkout → order ord_9b3c2d" },
-      { t: "decision", text: "Purchase complete. Receipt R-442 issued." },
-    ],
-  },
-  {
-    id: "run_003",
-    goal: "Buy a premium grinder under ₹10,000",
-    budget: 1000000,
-    status: "blocked",
-    steps: [
-      { t: "thought", text: "Goal: premium grinder under ₹10,000." },
-      { t: "tool", text: "fetch_catalog({category:'Grinders'}) → 4 items" },
-      { t: "decision", text: "Hand Grinder C40 (₹12,999) exceeds budget. Electric Grinder E1 (₹18,999) exceeds budget." },
-      { t: "tool", text: "check_mandate({max_per_order:1000000}) → blocked: budget_exceeded (line 1299900 > 1000000? no — per-order cap)" },
-      { t: "decision", text: "No qualifying grinder within budget. Dropping line. Logging block. Partial cart abandoned." },
-    ],
-  },
-];
+"use client";
+
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formatPaise } from "@/lib/data/products";
+
+type AuditPayload = {
+  totalPaise?: number;
+  outcome?: string;
+  determiningRule?: string;
+  reason?: string;
+  [key: string]: unknown;
+};
+
+type AuditEvent = {
+  id: string;
+  created_at: string;
+  actor: string;
+  action: string;
+  entity_type: string;
+  entity_id: string;
+  payload: AuditPayload | null;
+  hash: string;
+};
+
+type Receipt = {
+  id: string;
+  order_id: string;
+  total_paise?: number;
+  canonical_body: Record<string, unknown> | null;
+  hash: string;
+  created_at: string;
+};
+
+type Mandate = {
+  id: string;
+  envelope: {
+    maxPerOrderPaise?: number;
+    maxDailyPaise?: number;
+    expiry?: string;
+  } | null;
+  issued_at: string;
+  revoked_at: string | null;
+  checkout_hash: string | null;
+};
 
 export default function AgentActivityPage() {
+  const [events, setEvents] = useState<AuditEvent[]>([]);
+  const [receipts, setReceipts] = useState<Receipt[]>([]);
+  const [mandates, setMandates] = useState<Mandate[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [eRes, rRes, mRes] = await Promise.all([
+          fetch("/api/audit/events?limit=60"),
+          fetch("/api/receipts?limit=20"),
+          fetch("/api/mandates"),
+        ]);
+        if (!eRes.ok || !rRes.ok || !mRes.ok) throw new Error("failed to load activity");
+        const [eData, rData, mData] = await Promise.all([eRes.json(), rRes.json(), mRes.json()]);
+        if (cancelled) return;
+        setEvents(eData.events ?? []);
+        setReceipts(rData.receipts ?? []);
+        setMandates(mData.mandates ?? []);
+      } catch (err) {
+        if (!cancelled) setError(err instanceof Error ? err.message : "load failed");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const proposals = events.filter((e) => e.action === "proposal.allowed" || e.action === "proposal.blocked" || e.action === "policy.evaluated");
+
   return (
-    <div className="max-w-frame mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32 py-[8.25rem]">
-      <div className="flex flex-col gap-4 max-w-[39rem]">
-        <p className="font-dm-mono text-[12px] leading-4 tracking-[0.02em] uppercase text-muted-foreground">Buyer agent</p>
-        <h1 className="font-heading text-[clamp(2.5rem,1.5rem+2.5vw,3.75rem)] font-medium leading-[1.2] tracking-[-0.02em] text-primary">
-          Agent activity
-        </h1>
-        <p className="font-sans text-[1.125rem] leading-[1.5] font-normal text-muted-foreground">
-          Autonomous runs with zero human clicks. Every thought, tool call, and decision logged and receipted.
-        </p>
-      </div>
+    <main className="min-h-[calc(100dvh-4.5rem)]">
+      <div className="max-w-frame mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32 py-8">
+        <h1 className="text-2xl font-semibold mb-6">Agent Activity</h1>
 
-      <div className="mt-10 flex flex-col gap-6">
-        {RUNS.map((run) => (
-          <div key={run.id} className="rounded-xl border border-border bg-card p-6 shadow-sm">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="flex size-9 items-center justify-center rounded-md bg-muted">
-                  <Brain className="size-4 text-primary" />
-                </div>
-                <div>
-                  <h2 className="font-heading text-[1.125rem] font-medium tracking-[-0.02em] text-primary">{run.goal}</h2>
-                  <p className="font-dm-mono text-[11px] tracking-[0.02em] text-muted-foreground">
-                    {run.id} · budget ₹{(run.budget / 100).toLocaleString("en-IN")}
-                  </p>
-                </div>
-              </div>
-              <span
-                className={`rounded-sm px-2 py-0.5 font-dm-mono text-[10px] tracking-[0.02em] uppercase ${
-                  run.status === "completed"
-                    ? "bg-positive/10 text-positive"
-                    : run.status === "completed-with-block"
-                    ? "bg-brand/10 text-brand"
-                    : "bg-destructive/10 text-destructive"
-                }`}
-              >
-                {run.status}
-              </span>
-            </div>
+        {loading && <p className="text-sm text-muted-foreground">Loading activity…</p>}
+        {error && <p className="text-sm text-destructive">{error}</p>}
 
-            <ol className="mt-5 flex flex-col gap-2.5">
-              {run.steps.map((s, i) => {
-                const Icon = s.t === "thought" ? Clock : s.t === "tool" ? CheckCircle2 : s.t === "decision" ? AlertTriangle : XCircle;
-                const color = s.t === "thought" ? "text-muted-foreground" : s.t === "tool" ? "text-positive" : s.t === "decision" ? "text-primary" : "text-destructive";
-                return (
-                  <li key={i} className="flex items-start gap-3">
-                    <Icon className={`mt-0.5 size-4 shrink-0 ${color}`} />
-                    <span className={`font-mono text-[12px] leading-[1.6] ${color}`}>{s.text}</span>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
-        ))}
+        {!loading && !error && (
+          <Tabs defaultValue="audit">
+            <TabsList>
+              <TabsTrigger value="audit">Audit Trail</TabsTrigger>
+              <TabsTrigger value="proposals">Proposals</TabsTrigger>
+              <TabsTrigger value="mandates">Mandates & Receipts</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="audit" className="mt-4">
+              <Card>
+                <CardHeader><CardTitle>Hash-chained audit events (newest first)</CardTitle></CardHeader>
+                <CardContent>
+                  {events.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No events yet. Run a buyer-agent purchase or a chat to populate the trail.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-[12.5px]">
+                        <thead>
+                          <tr className="border-b border-border text-left font-mono text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground">
+                            <th className="py-2 pr-3">When</th>
+                            <th className="py-2 pr-3">Actor</th>
+                            <th className="py-2 pr-3">Action</th>
+                            <th className="py-2 pr-3">Entity</th>
+                            <th className="py-2 pr-3">Hash</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {events.map((e) => (
+                            <tr key={e.id} className="border-b border-border/60">
+                              <td className="py-2 pr-3 font-mono text-[10.5px] text-muted-foreground">{new Date(e.created_at).toLocaleTimeString()}</td>
+                              <td className="py-2 pr-3">{e.actor}</td>
+                              <td className="py-2 pr-3 font-medium">{e.action}</td>
+                              <td className="py-2 pr-3 font-mono text-[10.5px] text-muted-foreground">{e.entity_type}:{e.entity_id.slice(0, 12)}</td>
+                              <td className="py-2 pr-3 font-mono text-[10px] text-muted-foreground/70">{e.hash?.slice(0, 12)}…</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="proposals" className="mt-4">
+              <Card>
+                <CardHeader><CardTitle>Proposal log (merchant + buyer agent)</CardTitle></CardHeader>
+                <CardContent>
+                  {proposals.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No proposals yet.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {proposals.map((e) => (
+                        <div key={e.id} className="rounded-xl border border-border bg-card p-3">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-medium text-[13px]">{e.action}</span>
+                            <Badge variant={e.action.includes("blocked") ? "destructive" : "secondary"}>
+                              {e.payload?.outcome ?? (e.action.includes("blocked") ? "blocked" : "allowed")}
+                            </Badge>
+                          </div>
+                          <p className="mt-1 font-mono text-[10.5px] text-muted-foreground">
+                            {e.payload?.totalPaise ? formatPaise(e.payload.totalPaise) : ""} · {e.actor} · {new Date(e.created_at).toLocaleString()}
+                          </p>
+                          {e.payload?.determiningRule && (
+                            <p className="mt-1 text-[12px] text-muted-foreground">Blocked at: {e.payload.determiningRule} — {e.payload.reason}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="mandates" className="mt-4 space-y-4">
+              <Card>
+                <CardHeader><CardTitle>Mandates</CardTitle></CardHeader>
+                <CardContent>
+                  {mandates.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No mandates yet. Run a buyer-agent purchase to create one.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {mandates.map((m) => (
+                        <div key={m.id} className="rounded-xl border border-border bg-card p-3">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-medium text-[13px]">{m.id}</span>
+                            <Badge variant={m.revoked_at ? "destructive" : "secondary"}>{m.revoked_at ? "revoked" : "active"}</Badge>
+                          </div>
+                          <p className="mt-1 font-mono text-[10.5px] text-muted-foreground">
+                            per-order {formatPaise(m.envelope?.maxPerOrderPaise ?? 0)} · daily {formatPaise(m.envelope?.maxDailyPaise ?? 0)} · expires {m.envelope?.expiry ? new Date(m.envelope.expiry).toLocaleTimeString() : "—"}
+                          </p>
+                          {m.checkout_hash && <p className="mt-1 font-mono text-[10px] text-muted-foreground/70">checkout hash: {m.checkout_hash.slice(0, 16)}…</p>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader><CardTitle>Receipts</CardTitle></CardHeader>
+                <CardContent>
+                  {receipts.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No receipts yet.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {receipts.map((r) => {
+                        const body = (r.canonical_body ?? {}) as { outcome?: string; totalPaise?: number; total_paise?: number };
+                        const total = typeof r.total_paise === "number" ? r.total_paise : (typeof body.totalPaise === "number" ? body.totalPaise : (typeof body.total_paise === "number" ? body.total_paise : undefined));
+                        const outcome = typeof body.outcome === "string" ? body.outcome : "issued";
+                        return (
+                          <div key={r.id} className="rounded-xl border border-border bg-card p-3">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-medium text-[13px]">{r.id}</span>
+                              <Badge variant="secondary">{outcome}</Badge>
+                            </div>
+                            <p className="mt-1 font-mono text-[10.5px] text-muted-foreground">
+                              {total ? formatPaise(total) : ""} · {new Date(r.created_at).toLocaleString()} · hash {r.hash?.slice(0, 12)}…
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        )}
       </div>
-    </div>
+    </main>
   );
 }
