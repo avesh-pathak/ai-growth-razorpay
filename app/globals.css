@@ -53,6 +53,27 @@
   --radius-2xl: 1.25rem;
   --radius-3xl: 1.5rem;
   --radius-4xl: 2rem;
+  --color-chart-scale-pattern-color: var(----chart-scale-pattern-color);
+  --color-chart-scale-05: var(----chart-scale-05);
+  --color-chart-scale-04: var(----chart-scale-04);
+  --color-chart-scale-03: var(----chart-scale-03);
+  --color-chart-scale-02: var(----chart-scale-02);
+  --color-chart-scale-01: var(----chart-scale-01);
+  --color-chart-label: var(----chart-label);
+  --color-chart-marker-foreground: var(----chart-marker-foreground);
+  --color-chart-marker-border: var(----chart-marker-border);
+  --color-chart-marker-background: var(----chart-marker-background);
+  --chart-tooltip-muted: var(----chart-tooltip-muted);
+  --chart-tooltip-foreground: var(----chart-tooltip-foreground);
+  --chart-tooltip-background: var(----chart-tooltip-background);
+  --chart-brush-border: var(----chart-brush-border);
+  --color-chart-grid: var(----chart-grid);
+  --color-chart-crosshair: var(----chart-crosshair);
+  --chart-line-secondary: var(----chart-line-secondary);
+  --chart-line-primary: var(----chart-line-primary);
+  --color-chart-foreground-muted: var(----chart-foreground-muted);
+  --color-chart-foreground: var(----chart-foreground);
+  --color-chart-background: var(----chart-background);
 }
 
 /* Light theme (default) */
@@ -100,6 +121,27 @@
   --font-sans: "Geist", "Geist Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, monospace;
   --font-heading: "Geist", "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+  --chart-background: oklch(1 0 0);
+  --chart-foreground: oklch(0.145 0.004 285);
+  --chart-foreground-muted: oklch(0.55 0.014 260);
+  --chart-line-primary: var(--chart-1);
+  --chart-line-secondary: var(--chart-2);
+  --chart-crosshair: oklch(0.4 0.1828 274.34);
+  --chart-grid: oklch(0.9 0 0);
+  --chart-brush-border: var(--chart-grid);
+  --chart-tooltip-background: var(--popover);
+  --chart-tooltip-foreground: var(--popover-foreground);
+  --chart-tooltip-muted: var(--muted-foreground);
+  --chart-marker-background: oklch(0.97 0.005 260);
+  --chart-marker-border: oklch(0.85 0.01 260);
+  --chart-marker-foreground: oklch(0.3 0.01 260);
+  --chart-label: oklch(0.45 0.01 260);
+  --chart-scale-01: oklch(0.98 0.003 106);
+  --chart-scale-02: oklch(0.92 0.008 106);
+  --chart-scale-03: oklch(0.82 0.015 106);
+  --chart-scale-04: oklch(0.68 0.02 106);
+  --chart-scale-05: oklch(0.55 0.025 106);
+  --chart-scale-pattern-color: oklch(0.96 0.005 106);
 }
 
 /* Dark theme (shadcn .dark) */
@@ -141,6 +183,22 @@
   --sidebar-accent-foreground: #fafafa;
   --sidebar-border: #ffffff0a;
   --sidebar-ring: #ff4500;
+  --chart-background: oklch(0.145 0 0);
+  --chart-foreground: oklch(0.45 0 0);
+  --chart-foreground-muted: oklch(0.65 0.01 260);
+  --chart-crosshair: oklch(0.45 0 0);
+  --chart-grid: oklch(0.25 0 0);
+  --chart-brush-border: var(--chart-grid);
+  --chart-marker-background: oklch(0.25 0.01 260);
+  --chart-marker-border: oklch(0.4 0.01 260);
+  --chart-marker-foreground: oklch(0.9 0 0);
+  --chart-label: oklch(0.75 0.01 260);
+  --chart-scale-01: oklch(0.28 0.03 270);
+  --chart-scale-02: oklch(0.38 0.04 270);
+  --chart-scale-03: oklch(0.48 0.05 270);
+  --chart-scale-04: oklch(0.58 0.06 270);
+  --chart-scale-05: oklch(0.68 0.07 270);
+  --chart-scale-pattern-color: oklch(0.145 0 0);
 }
 
 .max-w-frame {
@@ -176,6 +234,96 @@
   --station: color-mix(in oklab, var(--brand-secondary) 30%, var(--card));
 }
 
+/* Responsive tables — below `sm` (phones), each row becomes a stacked card of
+   label/value pairs. Cells render their column name from `data-label`; cells
+   without the attribute (e.g. empty-state colSpan rows) render as plain text.
+   Long badges shrink and wrap instead of forcing a horizontal scroll. */
+@utility table-cards {
+  @media (width < 40rem) {
+    display: block;
+
+    & > thead {
+      display: none;
+    }
+
+    & > tbody {
+      display: block;
+    }
+
+    & > tbody > tr {
+      display: block;
+      border-bottom: 1px solid var(--border);
+      padding-block: 0.75rem;
+    }
+
+    & > tbody > tr:last-child {
+      border-bottom: 0;
+    }
+
+    & > tbody > tr > td {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding: 0.125rem 0;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    /* loading / empty-state rows span the full width as plain text */
+    & > tbody > tr > td:only-child {
+      display: block;
+    }
+
+    & > tbody > tr > td[data-label]::before {
+      content: attr(data-label);
+      flex: 0 0 6rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted-foreground);
+    }
+
+    & > tbody > tr > td [data-slot="badge"] {
+      white-space: normal;
+      height: auto;
+      flex-shrink: 1;
+      min-width: 0;
+    }
+
+    & > tfoot {
+      display: block;
+    }
+
+    & > tfoot > tr {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem;
+      border-top: 1px solid var(--border);
+      padding-block: 0.75rem;
+    }
+
+    & > tfoot > tr > td {
+      padding: 0;
+      white-space: normal;
+    }
+  }
+}
+
+/* Rule-in — the system entrance (fade + 40px rise + .985 scale). */
+@keyframes rule-in {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.rule-in {
+  animation: rule-in 0.56s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

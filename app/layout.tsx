@@ -6,6 +6,8 @@ import { ThemeProvider } from "@/lib/theme";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { ConditionalFooter } from "@/components/ConditionalFooter";
+import { Toaster } from "@/components/ui/sonner";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -50,8 +52,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <TooltipProvider>
             <CartProvider>
               <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
+              <main className="flex flex-1 flex-col">{children}</main>
+              <ConditionalFooter>
+                <Footer />
+              </ConditionalFooter>
+              <Toaster />
             </CartProvider>
           </TooltipProvider>
         </ThemeProvider>

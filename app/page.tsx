@@ -8,7 +8,7 @@ import { CommerceHero } from "@/components/purchase-flow/scene/live";
 
 export default function Home() {
   return (
-    <main id="main" className="min-h-screen">
+    <main id="main" className="min-h-[calc(100dvh-4.5rem)]">
       {/* Hero — compact, no empty space */}
       <section className="relative">
         <div className="max-w-frame mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-24 2xl:px-32 pt-16 pb-12">
